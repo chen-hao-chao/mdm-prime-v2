@@ -305,8 +305,8 @@ REFERENCE: And we've got to disprove that to the criminal standard, which is bey
 
 The following files are modified to adapt the original [ML-GSAI/SMDM](https://github.com/ML-GSAI/SMDM) code base to our training code:
 
-- `pretrain/train_prime_rl.py` is based on `pretrain/train_mdm_rl.py`
-- `lit_gpt/diffmodel.py` is modified to accept sub-token inputs
+- `pretrain/train_prime_rl.py` is based on `pretrain/train_mdm_rl.py`: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/096214f5c3fdefe0aa8302881eb586e8e5eacc18...e491c9b26a6551b6d93936ae3241255202be681d#diff-eaa7bc8d76dee9957b55627532470f9e20b1639b713d77f480e67b8978164431)
+- `lit_gpt/diffmodel.py` is modified to accept sub-token inputs: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/096214f5c3fdefe0aa8302881eb586e8e5eacc18...e491c9b26a6551b6d93936ae3241255202be681d#diff-dc4e1b21e60647885b4de82e823aa5c8ecd6c6bbf59b66fe23349eb4e3895dca)
 
 ### Subtokenizers
 

@@ -335,10 +335,10 @@ To find the `WANDB_RUN_ID`, click `overview` in your Weight & Bias pannel, and i
 
 The following files are modified to adapt the original [Megatron-LM](https://github.com/NVIDIA/Megatron-LM) code base to our training code:
 
-- `pretrain_mask_diff.py` is based on `pretrain_gpt.py`
-- `model_builders.py` is based on `gpt_builders.py`
-- `megatron/core/models/bert/mask_diff_model.py` is based on `megatron/core/models/bert/bert_model.py`
-- `megatron/training/arguments.py` is modified to include arguments for MDM-Prime-v2
+- `pretrain_mask_diff.py` is based on `pretrain_gpt.py`: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/06028347fb21584dda006f072809d6da50411c4d...8deca7902b65bd92ede7da21c1dcc5ea198b8176#diff-6ba1af439ba2a737cc6eb949eb2653c1489a7fde37ffc1ed9e6f06b14e1b9147)
+- `model_builders.py` is based on `gpt_builders.py`: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/06028347fb21584dda006f072809d6da50411c4d...8deca7902b65bd92ede7da21c1dcc5ea198b8176#diff-53e05efc2c306cd761490ad9a6b76cbdd82e610fcbca19c8bc7e3c9fd1048f65)
+- `megatron/core/models/bert/mask_diff_model.py` is based on `megatron/core/models/bert/bert_model.py`: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/06028347fb21584dda006f072809d6da50411c4d...8deca7902b65bd92ede7da21c1dcc5ea198b8176#diff-45807b585dac03adebcebb6bb7d33fc83322eb59192c3c4abcb82738907102b7)
+- `megatron/training/arguments.py` is modified to include arguments for MDM-Prime-v2: [[diff]](https://github.com/chen-hao-chao/mdm-prime-v2/compare/06028347fb21584dda006f072809d6da50411c4d...8deca7902b65bd92ede7da21c1dcc5ea198b8176#diff-246ab6242cc5a00230d03850529b92b1a59fef51aaa33f7286014c73029227c7)
 
 ### Subtokenizers
 
