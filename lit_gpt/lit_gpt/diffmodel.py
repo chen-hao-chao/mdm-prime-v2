@@ -17,18 +17,29 @@ from .fused_rotary_embedding import apply_rotary_emb_func
 RoPECache = Tuple[torch.Tensor, torch.Tensor]
 KVCache = Tuple[torch.Tensor, torch.Tensor]
 FlashAttention2Available = RequirementCache("flash-attn>=2.0.0.post1")
-
+import torch.nn.functional as F
 
 class TransEncoder(nn.Module):
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config, target_length=1, base=32000, sum_emb=True) -> None:
         super().__init__()
         assert config.padded_vocab_size is not None
         self.config = config
+        self.target_length = target_length
+        self.base = base
+        self.sum_emb = sum_emb
 
         self.lm_head = nn.Linear(config.n_embd, config.padded_vocab_size, bias=False)
+
+        if self.target_length == 1: # ($)
+            wte=nn.Embedding(config.padded_vocab_size + 1, config.n_embd)
+        else:
+            emb_n_embd = self.config.n_embd if self.sum_emb else self.config.n_embd // self.target_length
+            emb_vocab_size = (self.base+1) * self.target_length
+            wte=nn.Embedding(emb_vocab_size, emb_n_embd)
+
         self.transformer = nn.ModuleDict(
             dict(
-                wte=nn.Embedding(config.padded_vocab_size + 1, config.n_embd),
+                wte=wte,
                 h=nn.ModuleList(Block(config) for _ in range(config.n_layer)),
                 ln_f=config.norm_class(config.n_embd, eps=config.norm_eps),
             )
@@ -55,10 +66,11 @@ class TransEncoder(nn.Module):
     def forward(
         self, idx: torch.Tensor
     ) -> torch.Tensor:
-        B, T = idx.size()
+        B, L_l = idx.size()
+        L = L_l // self.target_length
 
-        block_size = self.config.block_size
-        assert block_size >= T, f"Cannot forward sequence of length {T}, block size is only {block_size}"
+        block_size = self.config.block_size * self.target_length
+        assert block_size >= L_l, f"Cannot forward sequence of length {L_l}, block size is only {block_size}"
 
         if self.rope_cache is None:
             self.rope_cache = self.build_rope_cache(idx)
@@ -67,11 +79,27 @@ class TransEncoder(nn.Module):
         # this will be resolved by https://github.com/pytorch/pytorch/issues/96099
 
         cos, sin = self.rope_cache
-        cos = cos[:T]
-        sin = sin[:T]
+        cos = cos[:L]
+        sin = sin[:L]
+        
+        # ($)
+        if self.target_length != 1:
+            pos = torch.arange(L_l, device=idx.device)
+            table_ids = pos.remainder(self.target_length)
+            offsets = table_ids * (self.base+1)
+            idx = idx + offsets.unsqueeze(0)
 
         # forward the model itself
         x = self.transformer.wte(idx)  # token embeddings of shape (b, t, n_embd)
+
+        # ($)
+        if self.target_length != 1:
+            B, _, D = x.shape
+            if self.sum_emb:
+                x = x.view(B, L, self.target_length, D).sum(dim=2).reshape(B, L, D)
+            else:
+                x = x.view(B, L, self.target_length * D)
+                x = F.pad(x, (0, self.config.n_embd - x.shape[-1]), "constant", 0)
 
         for block in self.transformer.h:
             x = block(x, (cos, sin))

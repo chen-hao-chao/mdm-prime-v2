@@ -8,10 +8,10 @@ pip install torch torchvision torchaudio
 # install flash-attention
 pip uninstall ninja -y && pip install ninja -U
 
-git clone https://github.com/Dao-AILab/flash-attention
+git clone --branch v2.8.2 https://github.com/Dao-AILab/flash-attention
 cd flash-attention
 pip install packaging
-python setup.py install
+python setup.py install --user
 
 cd csrc/rotary && pip install .
 cd ../layer_norm && pip install .

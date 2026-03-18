@@ -1,0 +1,13 @@
+*.sif
+lib*
+share
+pyvenv.cfg
+bin
+.lock
+*/__pycache__/*
+workdir/*
+datasets
+smdm
+omnicli
+run.sh
+wandb

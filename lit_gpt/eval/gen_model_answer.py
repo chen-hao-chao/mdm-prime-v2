@@ -99,9 +99,6 @@ def diff_sample(model, tokenizer, prompt=None, batch_size=1, alg='origin', steps
         t = timesteps[i]
         s = timesteps[i + 1]
 
-        logits_with_noise = add_gumbel_noise(logits, temperature=temperature)
-        x0 = torch.argmax(logits_with_noise, dim=-1)
-
         if alg == 'origin':
             p_transfer = 1 - s / t if i < steps - 1 else 1
             x0 = torch.zeros_like(x[mask_index], device=device, dtype=torch.long) + dim
@@ -110,13 +107,15 @@ def diff_sample(model, tokenizer, prompt=None, batch_size=1, alg='origin', steps
             x0[transfer_index_t_s] = torch.argmax(logits_with_noise, dim=-1)
             x[mask_index] = x0.clone()
         elif alg == 'greddy':
+            logits_with_noise = add_gumbel_noise(logits, temperature=temperature)
+            x0 = torch.argmax(logits_with_noise, dim=-1)
+
             logits = logits.to(torch.float64)
             p = F.softmax(logits, dim=-1)
             confidence = torch.gather(p, dim=-1, index=torch.unsqueeze(x0, -1)).squeeze(dim=-1)
             num_mask_token = mask_index.sum()
             number_transfer_tokens = int(num_mask_token * (1 - s / t)) if i < steps - 1 else num_mask_token
             if number_transfer_tokens > 0:
-                assert temperature < 0.00001
                 _, transfer_index = torch.topk(confidence, number_transfer_tokens)
                 x0_ = torch.zeros_like(x0, device=device, dtype=torch.long) + dim
                 x0_[transfer_index] = x0[transfer_index].clone()
