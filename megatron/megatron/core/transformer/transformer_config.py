@@ -29,6 +29,8 @@ try:
 except ImportError:
     HAVE_PACKAGING = False
 
+# ($) customized packages
+from megatron.core.transformer.enums import AttnMaskType
 
 @dataclass
 class TransformerConfig(ModelParallelConfig):
@@ -37,6 +39,12 @@ class TransformerConfig(ModelParallelConfig):
     The initialization function has an argument for each parameter,
     including those in ModelParallelConfig.
     """
+
+    ####################
+    # customized flags
+    ####################
+
+    attn_mask_type: AttnMaskType = AttnMaskType.causal
 
     ####################
     # model architecture

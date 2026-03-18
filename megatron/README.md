@@ -1,484 +1,417 @@
-<div align="center">
+# Pretraining using Megatron-LM
 
-Megatron-LM & Megatron Core
-===========================
-<h4>GPU-optimized library for training transformer models at scale</h4>
+<a href="https://arxiv.org/abs/2603.16077"><img src="https://img.shields.io/badge/arXiv-2603.16077-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
+<a href="https://huggingface.co/chen-hao-chao/mdm-prime-v2-c4"><img src="https://img.shields.io/badge/🤗_HuggingFace%20-MDM_Prime_v2_C4%20-orange" alt="MDM-Prime-v2 on Hugging Face"/></a>
+<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/dockerhub-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
 
-[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://docs.nvidia.com/Megatron-Core/developer-guide/latest/index.html)
-[![version](https://img.shields.io/badge/release-0.12.0-green)](./CHANGELOG.md)
-[![license](https://img.shields.io/badge/license-Apache-blue)](./LICENSE)
+This folder contains the code implementation of the scaling experiments presented in **Section 4.1** of [our paper](https://arxiv.org/abs/2603.16077). Our implementation is primarily based on [NVIDIA/Megatron-LM](https://github.com/NVIDIA/Megatron-LM).
 
-<div align="left">
+<img src="assets/teaser.gif" width="100%">
 
-## ⚡ Quick Start
+## Install Dependencies
 
+We recommend using [:whale: Docker](https://www.docker.com/) or [Apptainer](https://apptainer.org/) to build the environment for maximizing your GPU utilization. Lunch our pre-built docker image or build an image by yourself:
+
+### Build an Image
+
+1. Pull NVIDIA's base image `pytorch:25.04-py3` using the following command:
 ```bash
-# 1. Install Megatron Core with required dependencies
-pip install megatron-core
-pip install --no-build-isolation transformer-engine[pytorch]
-
-# 2. Clone repository for examples
-git clone https://github.com/NVIDIA/Megatron-LM.git
-cd Megatron-LM
+docker pull nvcr.io/nvidia/pytorch:25.04-py3
+# or
+apptainer pull docker://nvcr.io/nvidia/pytorch:25.04-py3
 ```
 
-**→ [Complete Installation Guide](#installation)** - Docker, pip variants (dev,lts,etc.), source installation, and system requirements
-
-# Latest News
-
-- 🔄 NEW! **[Megatron Bridge](https://github.com/NVIDIA-NeMo/Megatron-Bridge)** - Bidirectional converter for interoperability between Hugging Face and Megatron checkpoints, featuring production-ready recipes for popular models.
-- 🗺️ **[MoE Q3-Q4 2025 Roadmap](https://github.com/NVIDIA/Megatron-LM/issues/1729)** - Comprehensive roadmap for MoE features including DeepSeek-V3, Qwen3, advanced parallelism strategies, FP8 optimizations, and Blackwell performance enhancements.
-- 🚀 **[GPT-OSS Implementation](https://github.com/NVIDIA/Megatron-LM/issues/1739)** - Advanced features including YaRN RoPE scaling, attention sinks, and custom activation functions are being integrated into Megatron Core.
-- **[2025/06]** **[Megatron MoE Model Zoo](https://github.com/yanring/Megatron-MoE-ModelZoo)** - Best practices and optimized configurations for training DeepSeek-V3, Mixtral, and Qwen3 MoE models with performance benchmarking and checkpoint conversion tools.
-- **[2025/05]** Megatron Core v0.11.0 brings new capabilities for multi-data center LLM training ([blog](https://developer.nvidia.com/blog/turbocharge-llm-training-across-long-haul-data-center-networks-with-nvidia-nemo-framework/)). 
-
-<details>
-<summary>Previous News</summary>
-
-- **[2024/07]** Megatron Core v0.7 improves scalability and training resiliency and adds support for multimodal training ([blog](https://developer.nvidia.com/blog/train-generative-ai-models-more-efficiently-with-new-nvidia-Megatron-Core-functionalities/)). 
-- **[2024/06]** Megatron Core added supports for Mamba-based models. Check out our paper [An Empirical Study of Mamba-based Language Models](https://arxiv.org/pdf/2406.07887) and [code example](https://github.com/NVIDIA/Megatron-LM/tree/ssm/examples/mamba).
-- **[2024/01 Announcement]** NVIDIA has released the core capabilities in **Megatron-LM** into [**Megatron Core**](https://github.com/NVIDIA/Megatron-LM/tree/main/megatron/core) in this repository. Megatron Core expands upon Megatron-LM's GPU-optimized techniques with more cutting-edge innovations on system-level optimizations, featuring composable and modular APIs. Explore the [Megatron Core intro](#Megatron Core) for more details.
-
-</details>
-
-<details>
-<summary>Table of Contents</summary>
-
-**Getting Started**
-- [Quick Start](#-quick-start)
-- [Latest News](#latest-news)
-- [Megatron Overview](#megatron-overview)
-  - [Project Structure](#project-structure)
-  - [Megatron-LM: Reference Implementation](#megatron-lm-reference-implementation)
-  - [Megatron Core: Production Library](#megatron-core-production-library)
-- [Installation](#installation) 
-  - [Docker (Recommended)](#-docker-recommended)
-  - [Pip Installation](#-pip-installation)
-  - [Source Installation](#-source-installation)
-  - [System Requirements](#system-requirements)
-
-**Core Features**
-- [Performance Benchmarking](#performance-benchmarking)
-  - [Weak Scaling Results](#weak-scaling-results)
-  - [Strong Scaling Results](#strong-scaling-results)
-- [Ecosystem Libraries](#ecosystem-libraries)
-
-**Training**
-- [Training](#training)
-  - [Getting Started](#getting-started)
-  - [Data Preparation](#data-preparation)
-- [Parallelism Strategies](#parallelism-strategies)
-  - [Data Parallelism (DP)](#data-parallelism-dp)
-  - [Tensor Parallelism (TP)](#tensor-parallelism-tp)
-  - [Pipeline Parallelism (PP)](#pipeline-parallelism-pp)
-  - [Context Parallelism (CP)](#context-parallelism-cp)
-  - [Expert Parallelism (EP)](#expert-parallelism-ep)
-  - [Parallelism Selection Guide](#parallelism-selection-guide)
-- [Performance Optimizations](#performance-optimizations)
-
-**Resources**
-- [Examples](./examples/) - Training scripts and tutorials
-- [Documentation](https://docs.nvidia.com/Megatron-Core/) - Official docs
-- [Roadmaps](#roadmaps) - Development roadmaps and feature tracking
-- [Community & Support](#-community--support) - Get help and contribute
-  - [Getting Help](#getting-help)
-  - [Contributing](#contributing)
-  - [Citation](#citation)
-
-</details>
-
-# Megatron Overview
-
-## Project Structure
-```
-Megatron-LM/
-├── megatron/                    
-│   ├── core/                    # Megatron Core (kernels, parallelism, building blocks)
-│   │   ├── models/              # Transformer models
-│   │   ├── transformer/         # Transformer building blocks
-│   │   ├── tensor_parallel/     # Tensor parallelism
-│   │   ├── pipeline_parallel/   # Pipeline parallelism
-│   │   ├── distributed/         # Distributed training (FSDP, DDP)
-│   │   ├── optimizer/           # Optimizers
-│   │   ├── datasets/            # Dataset loaders
-│   │   ├── inference/           # Inference engines
-│   │   └── export/              # Model export (e.g. TensorRT-LLM)
-│   ├── training/                # Training scripts
-│   ├── inference/               # Inference server
-│   ├── legacy/                  # Legacy components
-│   └── post_training/           # Post-training (RLHF, etc.)
-├── examples/                    # Ready-to-use training examples
-├── tools/                       # Utility tools
-├── tests/                       # Comprehensive test suite
-└── docs/                        # Documentation
-```
-
-### Megatron-LM: Reference Implementation
-**Reference implementation** that includes Megatron Core plus everything needed to train models.
-
-**Best for:**
-- **Training state-of-the-art foundation models** at scale with cutting-edge performance on latest NVIDIA hardware
-- **Research teams** exploring new architectures and training techniques
-- **Learning distributed training** concepts and best practices  
-- **Quick experimentation** with proven model configurations
-
-**What you get:**
-- Pre-configured training scripts for GPT, LLama, DeepSeek, Qwen, and more.
-- End-to-end examples from data prep to evaluation
-- Research-focused tools and utilities
-
-### Megatron Core: Composable Library  
-**Composable library** with GPU-optimized building blocks for custom training frameworks.
-
-**Best for:**
-- **Framework developers** building on top of modular and optimized components
-- **Research teams** needing custom training loops, optimizers, or data pipelines
-- **ML engineers** requiring fault-tolerant training pipelines
-
-**What you get:**
-- Composable transformer building blocks (attention, MLP, etc.)
-- Advanced parallelism strategies (TP, PP, DP, EP, CP)
-- Pipeline schedules and distributed optimizers
-- Mixed precision support (FP16, BF16, FP8)
-- GPU-optimized kernels and memory management
-- High-performance dataloaders and dataset utilities
-- Model architectures (LLaMA, Qwen, GPT, Mixtral, Mamba, etc.)
-
-## Ecosystem Libraries
-
-**Libraries used by Megatron Core:**
-
-- **[Megatron Energon](https://github.com/NVIDIA/Megatron-Energon)** 📣 **NEW!** - Multi-modal data loader (text, images, video, audio) with distributed loading and dataset blending
-- **[Transformer Engine](https://github.com/NVIDIA/TransformerEngine)** - Optimized kernels and FP8 mixed precision support
-- **[Resiliency Extension (NVRx)](https://github.com/NVIDIA/nvidia-resiliency-ext)** - Fault tolerant training with failure detection and recovery
-
-**Libraries using Megatron Core:**
-
-- **[Megatron Bridge](https://github.com/NVIDIA-NeMo/Megatron-Bridge)** - Training library with bidirectional Hugging Face ↔ Megatron checkpoint conversion, flexible training loops, and production-ready recipes
-- **[NeMo RL](https://github.com/NVIDIA-NeMo/RL)** - Scalable toolkit for efficient reinforcement learning with RLHF, DPO, and other post-training methods
-- **[NeMo Framework](https://docs.nvidia.com/nemo-framework/user-guide/latest/overview.html)** - Enterprise framework with cloud-native support and end-to-end examples
-- **[TensorRT Model Optimizer (ModelOpt)](https://github.com/NVIDIA/TensorRT-Model-Optimizer)** - Model optimization toolkit for quantization, pruning, and distillation
-
-**Compatible with:** [Hugging Face Accelerate](https://github.com/huggingface/accelerate), [Colossal-AI](https://github.com/hpcaitech/ColossalAI), [DeepSpeed](https://github.com/microsoft/DeepSpeed)
-
-# Installation
-
-## 🐳 Docker (Recommended)
-
-We strongly recommend using the previous releases of [PyTorch NGC Container](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch) rather than the latest one for optimal compatibility with Megatron Core release and testing. Our releases are always based on the previous month's NGC container, so this ensures compatibility and stability.
-
-This container comes with all dependencies pre-installed with compatible versions and optimized configurations for NVIDIA GPUs:
-
-- PyTorch (latest stable version)
-- CUDA, cuDNN, NCCL (latest stable versions)
-- Support for FP8 on NVIDIA Hopper, Ada, and Blackwell GPUs
-- For best performance, use NVIDIA Turing GPU architecture generations and later
-
+2. The image `pytorch_25.04-py3.sif` will be saved in your current directory. Launch it using the following command:
 ```bash
-# Run container with mounted directories
-docker run --runtime --nvidia --gpus all -it --rm \
-  -v /path/to/megatron:/workspace/megatron \
-  -v /path/to/dataset:/workspace/dataset \
-  -v /path/to/checkpoints:/workspace/checkpoints \
-  nvcr.io/nvidia/pytorch:25.04-py3
+docker run -v $(pwd):/workspace --rm -it --gpus all --ipc=host nvcr.io/nvidia/pytorch:25.04-py3
+# or
+apptainer run --nv --bind "$(pwd)":/workspace --pwd /workspace pytorch_25.04-py3.sif
 ```
 
-## Pip Installation
-
-Megatron Core offers support for two NGC PyTorch containers:
-
-- `dev`: Moving head that supports the most recent upstream dependencies
-- `lts`: Long-term support of NGC PyTorch 24.01
-
-Both containers can be combined with `mlm` which adds package dependencies for Megatron-LM on top of Megatron Core.
-
+3. Install the following dependencies:
 ```bash
-# Install the latest release with minimal dependencies (no Transformer Engine)
-pip install megatron-core[dev]
-```
-
-```bash
-# Install packages for LTS support NGC PyTorch 24.01
 pip install megatron-core[lts]
-```
-
-For a version of Megatron Core with only torch, run:
-
-```bash
-pip install megatron-core
-```
-
-For dependencies required by Megatron-LM, please run:
-
-```bash
 pip install megatron-core[mlm]
+pip install datasets
+pip install wandb
+pip install --upgrade huggingface_hub
+pip install transformers -U
 ```
 
-## Source Installation
+For more installation information, please refer to [NVIDIA/Megatron-LM](https://github.com/NVIDIA/Megatron-LM).
 
-For development or latest features:
 
-For Hybrid models, Megatron Core requires [mamba](https://github.com/state-spaces/mamba). If the pre-built wheel in PyPI does not fit your environment, you can fall back to an install script Megatron Core uses in its CI system. For this, please install `uv` first:
+### Launch our Pre-built Image
 
+1. Pull our pre-built docker image:
 ```bash
-export UV_VERSION=0.7.2
-export PATH="$HOME/.local/bin:$PATH"
-curl -LsSf https://astral.sh/uv/${UV_VERSION}/install.sh | sh
-export UV_PROJECT_ENVIRONMENT=./venv
-export PATH="$UV_PROJECT_ENVIRONMENT/bin:$PATH"
-export UV_LINK_MODE=copy
+docker pull chenhaochao/mdm-prime-v2-megatron:latest
+# or
+apptainer pull mdm-prime-v2-megatron.sif docker://chenhaochao/mdm-prime-v2-megatron:latest
 ```
 
-Run the following command to build upstream dependencies from source:
-
+2. Launch the docker image at `mdm-prime-v2/megatron` through the following commands:
 ```bash
-# Clone and install
-git clone https://github.com/NVIDIA/Megatron-LM.git
-cd Megatron-LM
-
-# Optional: checkout specific release
-git checkout core_r0.13.0
-
-bash docker/common/install.sh --environment {dev,lts}
+docker run -v $(pwd):/workspace --rm -it --gpus all --ipc=host chenhaochao/mdm-prime-v2-megatron:latest
+# or
+apptainer run --nv --bind "$(pwd)":/workspace --pwd /workspace mdm-prime-v2-megatron.sif
 ```
 
-## System Requirements
-
-### Hardware Requirements
-- **FP8 Support**: NVIDIA Hopper, Ada, Blackwell GPUs
-- **Recommended**: NVIDIA Turing architecture or later
-
-### Software Requirements
-- **CUDA/cuDNN/NCCL**: Latest stable versions
-- **PyTorch**: Latest stable version
-- **Transformer Engine**: Latest stable version
-- **Python**: 3.12 recommended
-
-# Performance Benchmarking
-
-For our latest performance benchmarking results, please refer to [NVIDIA NeMo Framework Performance Summary](https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance_summary.html).
-
-Our codebase efficiently trains models from 2B to 462B parameters across thousands of GPUs, achieving up to **47% Model FLOP Utilization (MFU)** on H100 clusters.
-
-![Model table](images/model_table.png)
-
-**Benchmark Configuration:**
-- **Vocabulary size**: 131,072 tokens
-- **Sequence length**: 4096 tokens  
-- **Model scaling**: Varied hidden size, attention heads, and layers to achieve target parameter counts
-- **Communication optimizations**: Fine-grained overlapping with DP (`--overlap-grad-reduce`, `--overlap-param-gather`), TP (`--tp-comm-overlap`), and PP (enabled by default)
-
-**Key Results:**
-- **6144 H100 GPUs**: Successfully benchmarked 462B parameter model training
-- **Superlinear scaling**: MFU increases from 41% to 47-48% with model size
-- **End-to-end measurement**: Throughputs include all operations (data loading, optimizer steps, communication, logging)
-- **Production ready**: Full training pipeline with checkpointing and fault tolerance
-- *Note: Performance results measured without training to convergence*
-
-## Weak Scaling Results
-Our weak scaled results show superlinear scaling (MFU increases from 41% for the smallest model considered to 47-48% for the largest models); this is because larger GEMMs have higher arithmetic intensity and are consequently more efficient to execute.
-
-![Weak scaling](images/weak_scaling.png)
-
-## Strong Scaling Results
-We also strong scaled the standard GPT-3 model (our version has slightly more than 175 billion parameters due to larger vocabulary size) from 96 H100 GPUs to 4608 GPUs, using the same batch size of 1152 sequences throughout. Communication becomes more exposed at larger scale, leading to a reduction in MFU from 47% to 42%.
-
-![Strong scaling](images/strong_scaling.png)
-
-# Training
-
-## Getting Started
-
-### Simple Training Example
-```bash
-# Distributed training example (2 GPUs, mock data)
-torchrun --nproc_per_node=2 examples/run_simple_mcore_train_loop.py
-```
-
-### LLama-3 Training Example
-```bash
-# 8 GPUs, FP8 precision, mock data
-./examples/llama/train_llama3_8b_fp8.sh
-```
+---
 
 ## Data Preparation
 
-### JSONL Data Format
-```json
-{"text": "Your training text here..."}
-{"text": "Another training sample..."}
+The dataset and the tokenizer will be downloaded through the 🤗 Huggingface APIs. Please first login to Huggingface via the following command:
+```bash
+hf auth login
 ```
 
-### Basic Preprocessing
+1. **Download Raw Dataset**. Download the English split of [allenai/c4](https://huggingface.co/datasets/allenai/c4) and the GPT-2 tokenizer using the following command:
 ```bash
+python dataset/download_ds.py
+```
+It may take a few hours to complete depending on your network connection speed.
+
+2. **Convert the Data Format**. Megatron accepts `.jsonl` files for preprocessing. Convert the training shards into `.jsonl` files:
+```bash
+python dataset/convert_ds.py
+```
+
+3. **Data Preprocessing**. Concatenate the all the training and validation shards through the following commands. 
+```bash
+cat download/c4_jsonl/train/*.jsonl > download/c4_jsonl/train_all.jsonl
+cat download/c4_jsonl/validation/*.jsonl > download/c4_jsonl/validation_all.jsonl
+```
+Please note that concatenation is optinal but it makes the follow-up training commands cleaner. You can skip this step by modifying the training commands to take multiple shards. Then, use Megatron-LM's preprocessing commands shown as follows  (this step requires `cuda`):
+```bash
+# Training split:
 python tools/preprocess_data.py \
-    --input data.jsonl \
-    --output-prefix processed_data \
-    --tokenizer-type HuggingFaceTokenizer \
-    --tokenizer-model /path/to/tokenizer.model \
-    --workers 8 \
-    --append-eod
+    --input download/c4_jsonl/train_all.jsonl \
+    --output-prefix download/megatron_c4_en_train \
+    --vocab-file download/tokenizer/gpt2_tok/vocab.json \
+    --merge-file download/tokenizer/gpt2_tok/merges.txt \
+    --tokenizer-type GPT2BPETokenizer \
+    --json-key text \
+    --append-eod \
+    --workers 64
+
+# Validation split:
+python tools/preprocess_data.py \
+    --input download/c4_jsonl/validation_all.jsonl \
+    --output-prefix download/megatron_c4_en_val \
+    --vocab-file download/tokenizer/gpt2_tok/vocab.json \
+    --merge-file download/tokenizer/gpt2_tok/merges.txt \
+    --tokenizer-type GPT2BPETokenizer \
+    --append-eod \
+    --workers 64
+```
+The above two steps may take a few hours to complete. Once the preprocessing step is completed, you can delete `download/c4_jsonl` and `download/c4_en_snapshot` if they take too much of space. The datasets that Megatron-LM uses for training will be stored at the `download` folder as follows:
+```
+download /
+    ├── megatron_c4_en_train_text_document.idx
+    ├── megatron_c4_en_train_text_document.bin
+    ├── megatron_c4_en_val_text_document.idx
+    └── megatron_c4_en_val_text_document.bin
 ```
 
-### Key Arguments
-- `--input`: Path to input JSON/JSONL file
-- `--output-prefix`: Prefix for output binary files (.bin and .idx)
-- `--tokenizer-type`: Tokenizer type (`HuggingFaceTokenizer`, `GPT2BPETokenizer`, etc.)
-- `--tokenizer-model`: Path to tokenizer model file
-- `--workers`: Number of parallel workers for processing
-- `--append-eod`: Add end-of-document token
+---
 
-<!-- **→ [Complete Data Preparation Guide](./docs/data-preparation.md)** - Comprehensive guide covering advanced preprocessing, dataset collection, deduplication, and optimization strategies -->
+## Commands
 
-# Parallelism Strategies
+:pushpin: **Pretraining**
 
-## Data Parallelism (DP)
-
-### Standard Data Parallel
-```bash
-# Standard DDP - replicate model on each GPU
-torchrun --nproc_per_node=8 pretrain_gpt.py \
-    --data-parallel-sharding-strategy no_shard
-```
-
-### Fully Sharded Data Parallel (FSDP)
-```bash
-# Megatron's optimized FSDP (~15% faster than PyTorch FSDP2)
---use-custom-fsdp
-
-# PyTorch FSDP2
---use-torch-fsdp2
-
-# Sharding strategies
---data-parallel-sharding-strategy optim              # Shard optimizer states (ZeRO-1)
---data-parallel-sharding-strategy optim_grads        # Shard gradients + optimizer (ZeRO-2)
---data-parallel-sharding-strategy optim_grads_params # Shard parameters + gradients + optimizer (ZeRO-3)
-```
-
-## Tensor Parallelism (TP)
-Split individual model layers across GPUs:
-```bash
---tensor-model-parallel-size 4  # 4-way tensor parallelism
---sequence-parallel             # Enable sequence parallelism (recommended with TP)
-```
-
-## Pipeline Parallelism (PP)
-Split model depth across GPUs:
-```bash
---pipeline-model-parallel-size 8     # 8 pipeline stages
---virtual-pipeline-model-parallel-size 4  # Virtual pipeline for better load balancing
-```
-
-## Context Parallelism (CP)
-Split long sequences across GPUs for handling long contexts:
-```bash
---context-parallel-size 2                    # 2-way context parallelism
---cp-comm-type p2p                          # Communication: p2p, a2a, allgather, a2a+p2p
---hierarchical-context-parallel-sizes 2 4   # Hierarchical context parallelism
-```
-
-## Expert Parallelism (EP)
-For Mixture of Experts (MoE) models:
-```bash
---expert-model-parallel-size 4  # 4-way expert parallelism
---num-experts 8                 # 8 experts per MoE layer
---moe-grouped-gemm              # Optimize expert computation
-```
-
-## Combining Parallelism Strategies
-
-### Parallelism Selection Guide
-
-Based on [NVIDIA NeMo production configurations](https://github.com/NVIDIA/NeMo/tree/main/scripts/performance/recommended_model_configs):
-
-| Model | Size | GPUs | TP | PP | CP | EP | Notes |
-|-------|------|------|----|----|----|----|-------|
-| **LLama-3** | 8B | 8 | 1 | 1 | 2 | 1 | CP for long seqlen (8K) |
-| **LLama-3** | 70B | 64 | 4 | 4 | 2 | 1 | TP+PP |
-| **LLama-3.1** | 405B | 1024 | 8 | 8 | 2 | 1 | 3D parallelism for scale |
-| **GPT-3** | 175B | 128-512 | 4 | 8 | 1 | 1 | Large model config |
-| **Mixtral** | 8x7B | 64 | 1 | 4 | 1 | 8 | EP for MoE |
-| **Mixtral** | 8x22B | 256 | 4 | 4 | 8 | 8 | Combined TP+EP for large MoE |
-| **DeepSeek-V3** | 671B | 1024 | 2 | 16 | 1 | 64 | Large MoE config |
-
-### MoE-Specific Requirements
-
-**Important**: When combining Expert Parallelism (EP) with Tensor Parallelism (TP), **Sequence Parallelism (SP) must be enabled**.
-
-## Performance Optimizations
-
-| Feature | Flag | Benefit |
-|---------|------|---------|
-| **FlashAttention** | `--attention-backend` | Faster attention and lower memory usage |
-| **FP8 Training** | `--fp8-hybrid` | Faster training |
-| **Activation Checkpointing** | `--recompute-activations` | Reduced memory usage |
-| **Data Parallelism Communication Overlap** | `--overlap-grad-reduce` | Faster distributed training |
-| **Distributed Optimizer** | `--use-distributed-optimizer` | Reduced checkpointing time |
-
-**→ [NVIDIA NeMo Framework Performance Tuning Guide](https://docs.nvidia.com/nemo-framework/user-guide/latest/performance/performance-guide.html#performance-tuning-guide)** - Comprehensive performance optimization guide covering advanced tuning techniques, communication overlaps, memory optimizations, and profiling options.
-
-### FlashAttention
-[FlashAttention](https://github.com/Dao-AILab/flash-attention) is a fast and memory-efficient attention algorithm. We recommend the default usage, which uses cuDNN for attention via Transformer Engine and provides up to 50% speedups on forward and 84% on backward propagation with FP8 kernels. The `flash-attn` package is also supported via `--use-flash-attn`.
-
-### Mixed Precision Training
-```bash
---fp16                    # Standard FP16
---bf16                    # BFloat16 (recommended for large models)
---fp8-hybrid              # FP8 training (Hopper, Ada, and Blackwell GPUs)
-```
-
-### Activation Checkpointing and Recomputation
-```bash
-# For limited memory
---recompute-activations
-
-# For extreme memory constraints
---recompute-granularity full \
---recompute-method uniform
-```
-
-### Data Parallelism Communication Overlap
+Use the following command to train ARM, MDM, and MDM-Prime-v2 in Megatron-LM:
 
 ```bash
---overlap-grad-reduce
---overlap-param-gather
+torchrun $DISTRIBUTED_ARGS pretrain_{model_name}.py \
+    $DATA_ARGS \
+    $MODEL_ARGS \
+    $OPTIM_ARGS \
+    $PARALLEL_ARGS \
+    $LOG_ARGS
 ```
 
-### Distributed Optimizer
+Please refer to the [`scripts`](/megatron/scripts) folder for example training commands. A guideline to prompt these arguments is provided as follows (click to expand). 
+
+<details>
+<summary><strong>1. Hardware </strong> ($DISTRIBUTED_ARGS) </summary>
+
+Adjust `GPUS_PER_NODE` according to the number of available GPUs:
 ```bash
---use-distributed-optimizer
+export GPUS_PER_NODE=8
+DISTRIBUTED_ARGS="--nproc_per_node=$GPUS_PER_NODE"
+```
+    
+</details>
+
+<details>
+<summary><strong>2. Tokenizer & Data </strong> ($DATA_ARGS) </summary>
+
+Specify the paths to your tokenizer and dataset. If you follow our data downlading instructions, the dataset and tokenizer will be saved at the `download` folder:
+```bash
+DATA_ARGS="
+    --legacy-tokenizer \
+    --tokenizer-type GPT2BPETokenizer \
+    --vocab-size 50257 \
+    --vocab-file download/tokenizer/gpt2_tok/vocab.json \
+    --merge-file download/tokenizer/gpt2_tok/merges.txt \
+    --train-data-path download/megatron_c4_en_train_text_document \
+    --valid-data-path download/megatron_c4_en_val_text_document
+"
+```
+ 
+</details>
+
+
+<details>
+<summary><strong>3. Model Architecture </strong> ($MODEL_ARGS) </summary>
+
+Specify your model architecture. The following example uses a LLaMA-style architecture with 6 layers, 7 heads, hidden dimensionality 448, and sequence length 2048.
+```bash
+export NLAYERS=6 NHIDDEN=448 NHEADS=7
+export FFN_SIZE=$((4 * NHIDDEN))
+export SEQ=2048
+MODEL_ARGS="
+    --use-mcore-models \
+    --num-layers $NLAYERS \
+    --hidden-size $NHIDDEN \
+    --ffn-hidden-size $FFN_SIZE \
+    --num-attention-heads $NHEADS \
+    --seq-length $SEQ \
+    --max-position-embeddings $SEQ \
+    --position-embedding-type rope \
+    --use-rotary-position-embeddings \
+    --swiglu \
+    --normalization RMSNorm \
+    --disable-bias-linear \
+    --qk-layernorm \
+    --untie-embeddings-and-output-weights
+"
+```
+ 
+</details>
+
+
+<details>
+<summary><strong>4. Training & Optimization </strong> ($OPTIM_ARGS) </summary>
+
+Specify the optimizator configuration. In this example, we use the adamW optimizer with global batch size 256 (`GBS`) and batch size 32 (`MICRO_BS`). The training lasts for 70000 iterations (`TRAIN_ITERS`). To minimize the runtime, please properly set `MICRO_BS` to maximize the GPU utilization.
+```bash
+export MICRO_BS=32 GBS=256 TRAIN_ITERS=70000
+OPTIM_ARGS="
+    --optimizer adam \
+    --adam-beta1 0.9 \
+    --adam-beta2 0.95 \
+    --adam-eps 1e-8 \
+    --weight-decay 0.1 \
+    --lr 2e-4 \
+    --min-lr 2e-5 \
+    --lr-warmup-iters 1000 \
+    --lr-decay-style cosine \
+    --clip-grad 1.0 \
+    --bf16 \
+    --micro-batch-size $MICRO_BS \
+    --global-batch-size $GBS \
+    --train-iters $TRAIN_ITERS
+"
+```
+ 
+</details>
+
+<details>
+<summary><strong>5. Parallelism & Performance </strong> ($PARALLEL_ARGS) </summary>
+
+Specify how the training being parallelized and optimized (e.g., `flash-attn`, `distributed-optimizer`, ...). To minimize the runtime, please properly set `tensor-model-parallel-size` to maximize the GPU utilization.
+```bash
+PARALLEL_ARGS="
+    --tensor-model-parallel-size 1 \
+    --pipeline-model-parallel-size 1 \
+    --use-flash-attn \
+    --recompute-activations \
+    --overlap-grad-reduce \
+    --overlap-param-gather \
+    --use-distributed-optimizer \
+    --num-workers $GPUS_PER_NODE
+"
+```
+ 
+</details>
+
+<details>
+<summary><strong>6. Logging & Checkpointing </strong> ($LOG_ARGS) </summary>
+
+Specify the directories for storing the checkpoints and the Weight & Bias logging information:
+```bash
+export WANDB_API_KEY=${your_wandb_key}
+export WANDB_PROJECT_NAM="Megatron-LM"
+export VARIANT="mdm_param_14M"
+LOG_ARGS="
+    --save-interval 10000 \
+    --eval-interval 1000 \
+    --eval-iters 10 \
+    --log-interval 10 \
+    --save checkpoints/$VARIANT \
+    --wandb-project $WANDB_PROJECT_NAME \
+    --wandb-exp-name $VARIANT \
+    --wandb-save-dir outputs/wandb_$VARIANT \
+    --tensorboard-dir outputs/tensorboard_$VARIANT \
+    --tensorboard-queue-size 5 \
+    --log-timers-to-tensorboard \
+    --log-validation-ppl-to-tensorboard
+"
+```
+ 
+</details>
+
+**Important Note:** The parallelism strategy heavily influences the total runtime. We suggest the users to optimize the configuration before training.
+
+<br>
+
+:pushpin: **Estimating Training FLOPs**
+
+The total training FLOPs are determined by five variables in the scripts: `NLAYERS`, `NHIDDEN`, `GBS`, `TRAIN_ITERS`, and `SEQ`.
+
+```bash
+export NLAYERS=15 NHIDDEN=768
+export GBS=256 TRAIN_ITERS=300000 SEQ=2048
+```
+```bash
+python3 - <<'PY'
+import os
+L = int(os.environ["NLAYERS"])
+d = int(os.environ["NHIDDEN"])
+SEQ = int(os.environ.get("SEQ", 2048))
+total_params = 12*d*d*L
+print(f"---\nTotal non-embedding params (N): {total_params:,}  (~{total_params/1e9:.3f} B)")
+
+gbs = os.environ.get("GBS")
+iters = os.environ.get("TRAIN_ITERS")
+GBS = int(gbs); I = int(iters)
+D = GBS * SEQ * I
+flops = 6 * total_params * D
+print(f"Tokens processed (D):           {D:,}")
+print(f"Training FLOPs (~6*N*D):        {flops:.3e}  (~{flops/1e18:.2f} EFLOPs)")
+PY
 ```
 
-# Roadmaps
+This yields the following outputs:
 
-Stay up-to-date with our development roadmaps and planned features:
+```
+Total non-embedding params (N): 106,168,320  (~0.106 B)
+Tokens processed (D):           157,286,400,000
+Training FLOPs (~6*N*D):        1.002e+20  (~100.19 EFLOPs)
+```
 
-- **[MoE Q3-Q4 2025 Roadmap](https://github.com/NVIDIA/Megatron-LM/issues/1729)** - Comprehensive MoE feature development including DeepSeek-V3, Qwen3, advanced parallelism, FP8 optimizations, and Blackwell enhancements
-- **[GPT-OSS Implementation Tracker](https://github.com/NVIDIA/Megatron-LM/issues/1739)** - Advanced features including YaRN RoPE scaling, attention sinks, and custom activation functions
+<br>
 
-*More roadmap trackers will be added soon.*
+:pushpin: **Resume Training from a Checkpoint**
 
-# Community & Support
+Two additional variables to specify when resuming from a checkpoint: **(1) checkpoint path** and **(2) Weights & Biases run ID**. 
 
-## Getting Help
-- 📖 **[Documentation](https://docs.nvidia.com/Megatron-Core/)** - Official documentation
-- 🐛 **[Issues](https://github.com/NVIDIA/Megatron-LM/issues)** - Bug reports and feature requests
+Please use the `--load` flag to indicate the checkpoint path. Megatron-LM will read the `latest_checkpointed_iteration.txt` file in the `checkpoints/$VARIANT` directory to determine which checkpoint to load. Modify that file if you do not want to load the latest checkpoint.
 
-## Contributing
-We ❤️ contributions! Ways to contribute:
-- 🐛 **Report bugs** - Help us improve reliability
-- 💡 **Suggest features** - Shape the future of Megatron Core
-- 📝 **Improve docs** - Make Megatron Core more accessible
-- 🔧 **Submit PRs** - Contribute code improvements
+```bash
+--load checkpoints/$VARIANT
+```
 
-**→ [Contributing Guide](./CONTRIBUTING.md)**
+If you are using `wandb`, remember to export your run ID (`WANDB_RUN_ID`) and (`WANDB_RESUME`) when resuming the run from a checkpoint. Megatron-LM will properly handle the current resuming step and avoid overwrite your running log.
+
+```bash
+export WANDB_RUN_ID="r672nkbv"
+export WANDB_RESUME="allow"
+```
+
+To find the `WANDB_RUN_ID`, click `overview` in your Weight & Bias pannel, and it will appear in the `Run path` section:
+
+
+| <img src="assets/resume.png" alt="resume" width="650"> |
+| - |
+
+---
+
+## Implementation
+
+### Training Scripts
+
+The following files are modified to adapt the original [Megatron-LM](https://github.com/NVIDIA/Megatron-LM) code base to our training code:
+
+- `pretrain_mask_diff.py` is based on `pretrain_gpt.py`
+- `model_builders.py` is based on `gpt_builders.py`
+- `megatron/core/models/bert/mask_diff_model.py` is based on `megatron/core/models/bert/bert_model.py`
+- `megatron/training/arguments.py` is modified to include arguments for MDM-Prime-v2
+
+### Subtokenizers
+
+We make [subtokenizer](/megatron/subtokenizer) a separate package. MDM-Prime-v2 uses `BasebShufflingLayer`, which is a `torch.nn.Module` object that can encode (or decode) tokens into sub-tokens. Example usage ($b=2$, $\ell=16$):
+```python
+from subtokenizer.layers import BasebShufflingLayer
+
+base = 2
+target_length = 16 # token granularity in our paper
+random_ratio = 1.0
+subtokenizer = BasebShufflingLayer(base=base, target_length=target_length, perm=None, random_ratio=random_ratio)
+```
+The argument `perm` is a random permutation dictionary. The above example sets `perm=None` and `BasebShufflingLayer` will initiate a random permutation dictionary. If `perm=None`, remember to save `subtokenizer.perm` using `torch.save` to ensure reproducibility of the experiments.
+
+In this code base, our pre-built permutation dictionary is automatically loaded by default: (Please refer to [mask_diff_model.py](/megatron/megatron/core/models/bert/mask_diff_model.py#L125-L128) Lines 125-128.)
+```python
+fname = f"subtokenizer/perm/perm_{random_ratio}_{base**target_length}.pt"
+if os.path.exists(fname):
+    perm = torch.load(fname, map_location="cpu")
+```
+The pre-built dictionaries are stored at [`subtokenizer/perm`](/megatron/subtokenizer/perm). Dictionaries with different index shuffling ratios (`random_ratio`) are available:
+```
+subtokenizer /
+    └── perm /
+        ├── perm_0.0_50625.pt
+        ├── perm_0.0_65536.pt
+        ├── perm_0.25_50625.pt
+        ├── perm_0.25_65536.pt
+        ├── perm_1.0_50625.pt
+        └── perm_1.0_65536.pt
+```
+According to our empirical findings, the perplexity is robust against the random initialization. The performance of different runs with different permutation dictionaries should be comparable.
+
+---
+
+
+## Wandb Logs and Pretrained Weights
+
+All training curves are available in our Weights & Biases project: [lance_chao/megatron-all-runs](https://wandb.ai/lance_chao/megatron-all-runs). Please refer to the instructions in the [plot](/plot) folder for reproducing Fig. 5 in [our paper](https://arxiv.org/abs/2603.16077) with these wandb logs.
+
+| <img src="assets/training_curves.png" alt="training_curves" width="850"> |
+| - |
+
+We also release the weights (the last checkpoints). Please refer to our Huggingface release [🤗 Link](https://huggingface.co/chen-hao-chao/mdm-prime-v2-c4).
+
+
+---
+
+## License
+This code implementation is developed based on the following repositories.
+
+- [NVIDIA/Megatron-LM](https://github.com/NVIDIA/Megatron-LM) (at commit `636179d`), licensed under the `Apache-2.0` license.
+- [wmn-231314/diffusion-data-constraint](https://github.com/wmn-231314/diffusion-data-constraint) (at commit `61002b2`), licensed under the `Apache-2.0` license.
+
+Further changes based on the code in this folder are licensed under the `Apache-2.0` license.
+
+
+---
 
 ## Citation
-```bibtex
-@article{megatron-lm,
-  title={Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism},
-  author={Shoeybi, Mohammad and Patwary, Mostofa and Puri, Raul and LeGresley, Patrick and Casper, Jared and Catanzaro, Bryan},
-  journal={arXiv preprint arXiv:1909.08053},
-  year={2019}
+
+If you find this code implementation useful, please consider citing our paper.
+
+```bib
+@article{chao2026mdmprimev2,
+      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
+      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+      year = {2026},
+}
+@inproceedings{chao2025mdmprime,
+      title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 
+      author = {Chen-Hao Chao, Wei-Fang Sun, Hanwen Liang, Chun-Yi Lee, Rahul G. Krishnan},
+      booktitle = {Proceedings of the Conference on Neural Information Processing Systems (NeurIPS)},
+      year = {2025},
 }
 ```

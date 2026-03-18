@@ -1,10 +1,16 @@
 import os
-import torch
-from torch.optim import Adam
-from torch.utils.data import DataLoader, Iterator
+import sys
 from functools import partial
 from pathlib import Path
-from typing import Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Iterator, Tuple
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+import torch
+from torch.optim import Adam
+from torch.utils.data import DataLoader
 
 from megatron.core import parallel_state
 from megatron.core import dist_checkpointing

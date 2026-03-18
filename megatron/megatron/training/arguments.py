@@ -48,6 +48,10 @@ from megatron.core.quantization.utils import (
     load_quantization_recipe,
 )
 
+# ($) customized packages for bidirectional attention
+from megatron.core.transformer.enums import AttnMaskType
+import math
+
 def add_megatron_arguments(parser: argparse.ArgumentParser):
     """"Add Megatron-LM arguments to the given parser."""
 
@@ -104,6 +108,9 @@ def parse_args(extra_args_provider=None, ignore_unknown_args=False):
         args, _ = parser.parse_known_args()
     else:
         args = parser.parse_args()
+    
+    # ($) Process the base using target-length and vocab-size
+    args.base = math.ceil(args.vocab_size ** (1/args.target_length))
 
     # Experimental yaml
     if args.yaml_cfg is not None:
@@ -1278,7 +1285,6 @@ def core_transformer_config_from_args(args, config_class=None):
         kw_args['use_kitchen'] = True
         kw_args['quant_recipe'] = kitchen_quantization_recipe_config(args.kitchen_recipe_number)
 
-
     # Return config.
     return config_class(**kw_args)
 
@@ -1512,6 +1518,18 @@ def _add_retro_args(parser):
 
 def _add_network_size_args(parser):
     group = parser.add_argument_group(title='network size')
+
+    # ($) model specification flag
+    group.add_argument('--padded-output', type=int, default=0,
+                       help='Pad the logit so as to do TP.')
+    group.add_argument('--padded-input', type=int, default=0,
+                       help='Pad the embedding so as to do TP.')
+    group.add_argument('--embedding-type', type=str, default='cat-share',
+                       help='Embedding types: cat-share, cat, sum.')
+    group.add_argument('--scheduling-type', type=str, default='linear',
+                       help='Scheduler types: linear, poly, exp.')
+    group.add_argument('--scheduling-scale', type=float, default=1.0,
+                       help='Integer order for the poly/exp scheduler.')
 
     group.add_argument('--num-layers', type=int, default=None,
                        help='Number of transformer layers.')
@@ -1927,6 +1945,7 @@ def _add_rl_args(parser):
 
 def _add_training_args(parser):
     group = parser.add_argument_group(title='training')
+                    
 
     group.add_argument('--micro-batch-size', type=int, default=None,
                        help='Batch size per model instance (local batch size). '
@@ -2717,7 +2736,18 @@ def _add_validation_args(parser):
 
 def _add_tokenizer_args(parser):
     group = parser.add_argument_group(title='tokenizer')
-    group.add_argument('--vocab-size', type=int, default=None,
+
+    # ($) sub-tokenization
+    group.add_argument('--subtokenizer-type', type=str, default='baseb',
+                       help='Subtokenizer type: baseb, baseb_perm')
+    group.add_argument('--random-ratio', type=float, default=1.0,
+                       help='random permutation ratio.')
+    group.add_argument('--target-length', type=int, default=1,
+                       help='Length of sub-token sequences.')
+    group.add_argument('--base', type=int, default=None,
+                       help='New base of tokens.')
+
+    group.add_argument('--vocab-size', type=int, default=50257, # ($) BPE tokenier
                        help='Size of vocab before EOD or padding.')
     group.add_argument('--padded-vocab-size', type=int, default=None,
                        help='Vocabulary size of the model (padded to be divisible by '

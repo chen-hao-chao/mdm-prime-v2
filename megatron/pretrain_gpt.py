@@ -23,8 +23,8 @@ from megatron.training.utils import (
     is_first_or_last_pipeline_stage,
 )
 from megatron.training.datasets.sft_dataset import SFTDataset
-from model_provider import model_provider
-from gpt_builders import gpt_builder
+from model_providers import model_provider
+from model_builders import model_builder
 
 try:
     from megatron.post_training.arguments import add_modelopt_args, modelopt_args_enabled
@@ -232,7 +232,7 @@ if __name__ == "__main__":
 
     pretrain(
         train_valid_test_datasets_provider,
-        partial(model_provider, gpt_builder),
+        partial(model_provider, model_builder, ar_or_mdm="ar"),
         ModelType.encoder_or_decoder,
         forward_step,
         args_defaults={'tokenizer_type': 'GPT2BPETokenizer'},
