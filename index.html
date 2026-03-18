@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="google-site-verification" content="j9HTkRmcgC7YMr2kNlRSikoFh3-uMfjxyV1QIDjywOM" />
+  
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MDM-Prime-v2">
+  <meta name="keywords" content="Text Generation, Discrete Diffusion, Masked Diffusion Models">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/v2.png" type="image/x-icon">
+  <link rel="stylesheet" href="./static/css/custumize.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$','$$'], ['\\[', '\\]']],
+        processEscapes: true,
+        processEnvironments: true,
+        tags: 'ams',
+        macros: {
+          RR: "\\mathbb{R}",
+          EE: "\\mathbb{E}",
+          vx: "\\boldsymbol{x}",
+          vy: "\\boldsymbol{y}",
+          XX: "\\mathcal{X}",
+          YY: "\\mathcal{Y}",
+          VV: "\\mathcal{V}",
+          ff: "\\boldsymbol{f}",
+        }
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  
+    window.addEventListener('load', (event) => {
+        document.querySelectorAll("mjx-container").forEach(function(x){
+          x.parentElement.classList += 'has-jax'})
+      });
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+  </script>
+</head>
+
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h2 class="title is-1 publication-title" style="font-size: 2.3em; font-family: Times">MDM-Prime-v2: Binary Encoding and Index Shuffling Enable<br> Compute-optimal Scaling of Diffusion Language Models</h2>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://chen-hao-chao.github.io/">Chen-Hao Chao</a><sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://j3soon.github.io/">Wei-Fang Sun</a><sup>2</sup>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=oELpqRUAAAAJ&hl=en">Junwei Quan</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://elsalab.ai/about">Chun-Yi Lee</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.cs.toronto.edu/~rahulgk/">Rahul G. Krishnan</a><sup>1</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup> University of Toronto, Vector Institute,</span></br>
+            <span class="author-block"><sup>2</sup> NVIDIA AI Technology Center,</span></br>
+            <span class="author-block"><sup>3</sup> National Taiwan University</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2505.18495"
+                   class="external-link button is-normal is-rounded is-dark" style="text-decoration: none;">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Hugginface Link. -->
+              <span class="link-block">
+                <a href="https://huggingface.co/collections/chen-hao-chao/mdm-prime"
+                   class="external-link button is-normal is-rounded is-dark" style="text-decoration: none;">
+                  <span class="icon">
+                    <img src="./static/images/hug.png" class="center"/>
+                  </span>
+                  <span>huggingface</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://github.com/chen-hao-chao/mdm-prime-v2"
+                   class="external-link button is-normal is-rounded is-dark" style="text-decoration: none;" >
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>github</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+
+          <div class="column has-text-centered">
+            &#9654 <b>TL;DR: </b>
+            <div class="w3-tag w3-round w3-dark-grey w3-border w3-border-white">
+              A diffusion language framework that scales 21.8$\times$ better than autoregressive models.
+            </div>
+
+            <!-- <div class="w3-bar w3-border w3-light-grey" style="height:10px; visibility:hidden;"></div>
+            &#9654 <b>Venue: </b>
+            <div class="w3-tag w3-round w3-dark-grey w3-border w3-border-white">
+              Conference on Neural Information Processing Systems (NeurIPS 2025)
+            </div> -->
+        </div><br></br>
+        <div class="w3-bar w3-border w3-light-grey"></div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="container is-max-desktop" > -->
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/3IPZhTumzM0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div></br> -->
+    <!--/ Paper video. -->
+    <!-- <div class="w3-bar w3-border w3-light-grey"></div> -->
+  <!-- </div> -->
+</section>
+
+<section class="section" style="padding-top: 0rem !important; padding-bottom: 1.5em !important;">
+  <div class="container is-max-desktop">
+    <p id="Fig1" class="has-text-centered" style="font-style: italic;">
+      <img src="./static/images/teaser.gif" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br/>
+      <b>Figure 1.</b> The loss envelops (upper subplots) and isoFLOP curves (lower subplots) of autoregressive models (ARM), masked diffusion models (MDM), and our MDM-Prime-v2 framework. In the upper subplots, the number of parameters ranges from 14M (purple) to 3.4B (yellow). In lower subplots, the compute budget ranges from $3\times 10^{18}$ to $3\times 10^{20}$ FLOPs.
+    </p>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title" style="text-indent: -0.35em; font-family: Times">Tightening Variational Bound via Subtokenizer</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="content has-text-justified scroll-wrapper">
+        
+        <p>Masked diffusion models (MDM) minimize the variational upper bound of negative log-likelihood (NLL), i.e., $\EE_{q_\text{data}(\vx_0)}[-\log p(\vx_0)]$. Let $\vx_0\in \XX^L$ be a sequence of $L$ 
+          tokens and $q(\vx_t|\vx_0)$ be the forward diffusion kernel that masks a token with probability $1-\alpha_t$. The <strong>variational upper bound</strong> is written as follows:
+        </p>
+        <p class="has-text-centered">$$
+          \begin{equation}
+          \label{eq:diffusion_elbo}
+          \begin{aligned}
+              \mathcal{L}_\text{vb}=\int_0^1 \frac{\alpha'_t}{1-\alpha_t} \mathbb{E}_{q(\vx_t|\vx_0)}\left[\log p (\vx_0|\vx_t) \right] dt,
+          \end{aligned}
+          \end{equation}
+        $$</p>
+        <p>where $\alpha_t'=\frac{d}{dt} \alpha_t$ and $p (\vx_0|\vx_t)$ is a parametric function.</p>
+        <p>The <a href="https://chen-hao-chao.github.io/mdm-prime/">Partial masking scheme</a> (Prime) generalizes Eq. (<a style="color: blue;">\ref{eq:diffusion_elbo}</a>) by 
+          representing each token $\vx_0\in \XX^L$ as a sequence of $\ell$ sub-tokens $\vy_0\in \YY^{L\times\ell}$ via an invertible function $\ff_\ell$, known as <strong>subtokenizer</strong>. 
+          MDM-Prime approximates the same objective as MDM by substituting $\vx_0$ as $\vy_0$. The variational bound can be expressed as follows:</p>
+        <p class="has-text-centered">$$
+          \begin{equation}
+          \label{eq:prime_elbo}
+          \begin{aligned}
+              \mathcal{L}_\text{vb}^{(\ell)}=\int_0^1 \frac{\alpha'_t}{1-\alpha_t} \mathbb{E}_{q(\vy_t|\vy_0)}\left[\log p_\ell (\vy_0|\vy_t) \right] dt,
+          \end{aligned}
+          \end{equation}
+        $$</p>
+        <p>where $p_\ell (\vy_0|\vy_t)$ is MDM-Prime's parametric function.</p><br>
+        <p>This work shows that a proper design of $\ff_\ell$ leads to tightened variational bounds. To achieve this goal, MDM-Prime-v2 incorporates two techniques: <strong>(1)</strong> Set $\ell=\lceil \log_2 V\rceil$, under which $\ff_\ell$ performs binary
+          encoding. <strong>(2)</strong> Employ an index shuffling operation to encode high-entropy sub-tokens.</p>
+        <p id="Fig2" class="has-text-centered" style="font-style: italic;">
+          <img src="./static/images/compare_animation.gif" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br/>
+          <b>Figure 2.</b> Overview of MDM, MDM-Prime, and the MDM-Prime-v2 enhancements. $\ell$ is the token granularity in $\ff_\ell$ and $V$ is the vocabulary size.
+          $y_0^{i,j}$ is a sub-token with positional indices $i$ and $j$. The gray cell intensity in the lower section represents sub-token probability when $y_0^{i,j}=0$ or $1$.
+        </p>
+        <br>
+        <h4 class="title">Technique 1: Binary Encoding</h4>
+        <p>We show that the variational bound of MDM-Prime is monotonically non-increasing with respect to $\ell$.</p>
+        
+        <div class="w3-container w3-panel w3-leftbar w3-light-grey w3-border-blue" style="padding-top: 1rem; padding-bottom: 1rem;">
+          <p style="font-style: italic;">
+            <b>Proposition 1.</b> Let $\ell_1$, $\ell_2$ be token granularities satisfying $1<\ell_1<\ell_2$. The following inequalities hold:
+            <p class="has-text-centered">$$
+              \begin{equation}
+              \label{eq:prop_1}
+              \begin{aligned}
+                  \inf_p \mathcal{L}_\text{vb} \geq \inf_{p_{\ell_1}} \mathcal{L}_\text{vb}^{(\ell_1)} \geq \inf_{p_{\ell_2}} \mathcal{L}_\text{vb}^{(\ell_2)}.
+              \end{aligned}
+              \end{equation}
+            $$</p>
+          </p>
+        </div>
+        <p>The theory indicates that diffusion processes with more fine-grained token representations have tighter bound. 
+          Based on this finding, we propose to select the maximum viable $\ell=\lceil \log_2 V\rceil$ such that $\ff_\ell$ encodes tokens into <strong>binary</strong> sub-tokens.</p><br>
+
+        <h4 class="title">Technique 2: Index Shuffling</h4>
+        <p>We show that the variational bound of MDM-Prime is minimized when the entropy of sub-tokens is maximized.</p>
+        <div class="w3-container w3-panel w3-leftbar w3-light-grey w3-border-blue" style="padding-top: 1rem; padding-bottom: 1rem;">
+          <p style="font-style: italic;">
+            <b>Proposition 2.</b> The variational bound can be decomposed into $\ff_\ell$-independent and $\ff_\ell$-dependent terms as follows:
+            <p class="has-text-centered">$$
+              \begin{equation}
+              \label{eq:prop_2}
+              \begin{aligned}
+              \inf_{\ff_\ell} \inf_{p_\ell} \mathcal{L}^{(\ell)}_\text{vb}= \int_{0}^1 \frac{\alpha'_t}{1-\alpha_t} \Big(\underbrace{-\mathcal{H}(\vy_0, \vy_t)}_\text{Independent on $\ff_\ell$.}+\sup_{\ff_\ell} \underbrace{\mathcal{H}(\vy_t)}_\text{Dependent on $\ff_\ell$.} \Big)dt,
+              \end{aligned}
+              \end{equation}
+            $$</p>
+          </p>
+        </div>
+        <p>The $\ff_\ell$-independent term corresponds to the joint negative entropy 
+          $-\mathcal{H}(\vy_0, \vy_t) = -(\mathcal{H}(\vy_0) + \mathcal{H}(\vy_t | \vy_0))$, where $\mathcal{H}(\vy_0) = \mathcal{H}(\vx_0)$ remains 
+          constant due to the invertibility of $\ff_\ell$, while $\mathcal{H}(\vy_t | \vy_0)$ is determined solely by the forward kernel. On the other hand, 
+          the $\ff_\ell$-dependent term suggests that the optimal $\ff_\ell$ should maximize the entropy of $\vy_t$, which reaches its optimum when each unmasked 
+          $y_t^{i,j}$ is uniformly distributed on $\YY$.</p>
+        <p>Although <strong>Proposition 2</strong> identifies <strong>high-entropy sub-tokens</strong> as the ideal case for optimality, the sub-tokens generated by directly applying 
+          base-$b$ encoding to the token indices from commonly-used <strong>Byte-Pair Encoding (BPE) tokenizers</strong> exhibit low entropy. This occurs since BPE is constructed by iteratively 
+          merging the most frequent subword pairs. As a result, token probability is inversely proportional to the token index (see the left subplots with title `w/o Shuff' 
+          in <strong>Fig. <a href="#Fig3">3</a></strong> (a) and (b)). Directly encoding these structured token indices using base-$b$ encoding results in sub-tokens with low entropy, contradicting 
+          the maximization goal.</p>
+
+        <p id="Fig3" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/tok_prob.png" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 3.</b> (a) Token probability and (b) cumulative distribution function (CDF) over token indices of the GPT-2 tokenizer evaluated on the C4 dataset. The left and right subplots of (a) and (b) show setups without and with index shuffling, respectively. The gray dashed line in (b) represents the CDF of a uniform token distribution.
+        </p>
+
+        <p>To effectively disrupt the inherent token index structure, we propose to <strong>randomly shuffle</strong> the token indices before performing base-$b$ encoding. This method leads to more uniformly distributed sub-tokens with higher entropy.</p><br>
+        <h4 class="title">Implementation via Lookup Tables</h4>
+        <p>The Techniques 1 and 2 suggest the following subtokenizer: $\ff_\ell= \ff_\text{base-$b$}\circ \ff_\text{shuffle}$, where $\ff_\text{base-$b$}$ performs binary encoding with $\ell=\lceil\log_2 V\rceil$, while 
+          $\ff_{\text{shuffle}}$ maps the original token indices into shuffled ones. The entire operation is implemented using lookup tables, requiring <strong>zero FLOPs</strong> and can be performed during data preprocessing.
+          <strong>Fig. <a href="#Fig4">4</a></strong> shows an example of this operation. 
+        </p>
+
+        <p id="Fig4" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/lookup_animation.gif" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 4.</b> (a) The subtokenizer $\ff_\ell$ in MDM-Prime-v2 is implemented via two lookup tables. (b) The NLL of MDM ($\ell=1$) and MDM-Prime ($\ell>1$) under three setups: `w/o Shuff.,' `w/ Shuff. (25%)', and `w/ Shuff.' $\lceil\log_2 V\rceil=16$ represents the maximum of $\ell$. 
+          The red dashed line represent the NLL of the compute-optimal ARM. All models are trained using $10^{19}$ FLOPs. The experiments are conducted on C4 tokenized using GPT-2 tokenizer.
+        </p>
+      </div>
+    </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title" style="text-indent: -0.35em; font-family: Times">Experiments</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="content has-text-justified scroll-wrapper">
+        <h4 class="title">Loss Behavior and Scaling Analysis</h4>
+        <p>As established in (Kaplan et al. 2020; Hoffmann et al. 2022), the NLL of language models exhibits a strong correlation with the training FLOPs. 
+          This compute budget is primarily determined by two configuration factors: the total number of training tokens ($D$) and the number of non-embedding parameters ($N$). 
+          <strong>Fig. <a href="#Fig1">1</a></strong> presents the loss envelopes and isoFLOP curves for ARM, MDM, and MDM-Prime-v2. By analyzing the minima of the isoFLOP contours, 
+          we observe that MDM-Prime-v2 consistently achieves a lower compute-optimal loss than ARM and MDM. As shown in <strong>Fig. <a href="#Fig5">5</a></strong> (a), MDM-Prime-v2 is <strong>21.8$\times$</strong> more compute-efficient than ARMs. 
+        </p>
+        <p id="Fig5" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/efficiency.png" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 5.</b> (a) Compute-optimal scaling comparison between MDM, ARM, and MDM-Prime-v2. Markers represent the compute-optimal empirical samples, 
+          while dashed lines indicate the fitted power-law scaling curves. The arrows highlight the compute efficiency gains at a fixed loss level. 
+          (b) The coefficients ($\hat{a}$ and $\hat{b}$) derived using the Chinchilla scaling law. A larger $\hat{a}$ indicates that compute resources should prioritize model 
+          parameters, while a larger $\hat{b}$ indicates that compute resources should prioritize training tokens.
+        </p>
+        <p>
+          We then employ the Chinchilla scaling law to analyze loss behavior. Using our empirical observations, we fit the power-law loss estimator: 
+          $\hat{\mathcal{L}}(N,D) = E + \frac{A}{N^\alpha} + \frac{B}{D^\beta}$, where $\alpha,\beta,A,B$, and $E$ are coefficients determined via regression. Under a fixed compute budget 
+          $C \approx 6ND$, the optimal allocation of parameters ($N_{\text{opt}}$) and tokens ($D_{\text{opt}}$) is derived as follows:
+        </p>
+        <p class="has-text-centered">$$
+          \begin{equation}
+          \label{eq:scaling}
+          \begin{aligned}
+          N_{\text{opt}} = G \left( \frac{C}{6} \right)^{\hat{a}}, \quad D_{\text{opt}} = G^{-1} \left( \frac{C}{6} \right)^{\hat{b}},
+          \end{aligned}
+          \end{equation}
+        $$</p>
+        <p>where $G = \left( \frac{\alpha A}{\beta B} \right)^{\frac{1}{\alpha+\beta}}$, $\hat{a} = \frac{\beta}{\alpha+\beta}$, and $\hat{b} = \frac{\alpha}{\alpha+\beta}$. 
+          As shown in <strong>Fig. <a href="#Fig5">5</a></strong> (b), ARM exhibits the largest $\hat{a}$ and the smallest $\hat{b}$, indicating that the compute-optimal 
+          configuration of ARM prioritizes increasing model capacity ($N$) over data volume ($D$). In contrast, MDM-Prime-v2 yields the smallest $\hat{a}$ and the largest $\hat{b}$, 
+          suggesting that its compute-optimal performance is driven more by increasing training tokens than by expanding model parameters. These coefficients determine the 
+          compute-optimal frontier lines (i.e., the blue straight lines) illustrated in <strong>Fig. <a href="#Fig6">6</a></strong>.
+        </p>
+        <p id="Fig6" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/scaling.png" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 6.</b> The isoloss curves of ARM, MDM, and MDM-Prime-v2. The solid blue line denotes the efficient frontier, and the red dashed line represents 
+          $2.89 \times 10^{20}$ FLOPs. Triangular markers represent the configuration used by (Sahoo et al. 2024), while circular markers denote the compute-optimal setup.
+        </p>
+        <p>The ARM frontier is shifted toward larger models (upward/left), whereas the MDM-Prime-v2 frontier is shifted toward longer training (downward/right). These results 
+          serve as a diagnostic tool for compute efficiency. For example, a commonly-used training configuration in MDM research (Sahoo et al. 2024) adopts $N$=92M, $D$=524B ($2.89 \times 10^{20}$ FLOPs), 
+          which falls short of the compute-optimal frontier for all three models (as indicated by the gap between <svg width="14" height="14" viewBox="0 0 120 120" style="vertical-align: middle;">
+            <polygon points="60,20 100,100 20,100" fill="red" stroke="black" stroke-width="8" />
+          </svg> and <svg width="14" height="14" viewBox="0 0 120 120" style="vertical-align: middle;">
+            <circle cx="60" cy="60" r="45" fill="red" stroke="black" stroke-width="8" />
+          </svg> in <strong>Fig. <a href="#Fig6">6</a></strong>). 
+          To understand how this discrepancy affects model ranking, we offers a further analysis on the OpenWebText (OWT) benchmark.</p>
+        <p id="Fig7" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/owt.png" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 7.</b> Perplexity (PPL) evaluation on OWT. Methods marked with $\ast$ are trained with a compute-optimal setup, where the non-embedding parameters ($N$) and number 
+          of training tokens ($D$) are optimized based on the efficient frontier line presented in <strong>Fig. <a href="#Fig6">6</a></strong>. The total compute is fixed at 
+          $2.89 \times 10^{20}$ FLOPs for all models.
+        </p>
+        <p>As demonstrated in <strong>Fig. <a href="#Fig7">7</a></strong>, ARM's PPL improves significantly, from 17.54 to 12.99 (i.e., the difference between ARM and ARM* is 4.55), 
+          simply by adjusting $N$ and $D$. In addition, the baseline configuration ($N$=92M, $D$=524B), which uses excessively large $D$, appears to inadvertently 
+          favor the MDM-based approaches, evidenced by the relatively small gains observed in MDM, MDM-Prime, and MDM-Prime-v2 when shifting to the <strong>compute-optimal setup</strong>. 
+          By calibrating all models to the compute-optimal setup, we establish a <strong>consistent and fair criterion</strong> for performance evaluation. 
+          Under this configuration, MDM-Prime-v2* outperforms ARM*, MDM-Prime*, and MDM* by noticeable margins of 5.22, 5.64, and 11.17 PPL, respectively.</p>
+        <br>
+        <h4 class="title">Larger-Scale Pretraining</h4>
+        <p>In this experiment, we adopt the training configuration of TinyLLaMA (ARM) (Zhang et al. 2024) and SMDM (MDM) (Nie et al. 2025) to train a 1.1B parameter model on 540B tokens 
+          from the Slimpajama dataset (totaling $3.3\times 10^{21}$ FLOPs). We compare the models on a wide-range commonsense reasoning tasks. The model architecture and tokenizer are 
+          based on LLaMA. 
+        </p>
+        <p id="Fig8" class="has-text-centered" style="font-style: italic;  text-align: justify !important; margin-bottom: 35px; margin-top: 35px;">
+          <img src="./static/images/zeroshot.png" style="width:100%; border: 2px solid rgb(216, 216, 216); margin-bottom: 10px;"/><br>
+          <b>Figure 8.</b> Zero-shot accuracies evaluated on eight commonsense reasoning benchmarks. Higher values correspond to better performance.
+        </p>
+        <p><strong>Fig. <a href="#Fig8">8</a></strong> presents the results. We compare our method against several pretrained ARM and MDM baselines of 
+          similar size: GPT-Neo (1.3B), OPT (1.3B), Pythia (1.4B), Bloom (1.1B), SMDM (1.1B), and TinyLLaMA (1.1B). MDM-Prime-v2 achieves the highest average 
+          accuracy across the tasks, outperforming these baselines on six of the eight tasks. In particular, our model demonstrates advantages in temporal reasoning
+           and scientific question answering, delivering significant gains on the McTaco and SciQ benchmarks.
+        </p>
+      </div>
+    </div>
+</section> 
+
+
+<!-- <section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title" style="text-indent: -0.35em;">Poster</h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="content has-text-justified scroll-wrapper">
+        <p class="has-text-centered" style="font-style: italic;"><embed src="./static/images/NeurIPS25-poster.pdf" width="980pt" height="545pt"></p>
+      </div>
+    </div>
+</section>  -->
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop">
+    <h2 class="title" style="text-indent: -0.35em; font-family: Times">BibTeX</h2>
+    <pre><code>article{chao2026mdmprimev2,
+        title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
+        author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+        year = {2026},
+}
+@inproceedings{chao2025mdmprime,
+      title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 
+      author = {Chen-Hao Chao, Wei-Fang Sun, Hanwen Liang, Chun-Yi Lee, Rahul G. Krishnan},
+      booktitle = {Proceedings of the Conference on Neural Information Processing Systems (NeurIPS)},
+      year = {2025},
+}</code></pre>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            The template of this page is based on the
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> website.
+            You are free to borrow the <a href="https://github.com/chen-hao-chao/ebflow">code</a> of this website,
+            we just ask that you link back to this page in the footer.
+            Please remember to remove the analytics code included in the header of the website which
+            you do not want on your website.
+          </p>
+          <p>
+            This website is licensed under a <a rel="license"
+              href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
