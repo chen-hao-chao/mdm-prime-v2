@@ -7,8 +7,10 @@
 <p align="center">
 <a href="https://arxiv.org/abs/2603.16077"><img src="https://img.shields.io/badge/arXiv-2603.16077-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
 <a href="https://huggingface.co/collections/chen-hao-chao/mdm-prime"><img src="https://img.shields.io/badge/🤗_HuggingFace%20-MDM_Prime_v2%20-orange" alt="MDM-Prime-v2 on Hugging Face"/></a>
-<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/dockerhub-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
-<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/dockerhub-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
+<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
+<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
+<a href="https://x.com/chenhao_chao/status/1935699633654931464"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
+
 </p>
 
 ## What’s Inside
