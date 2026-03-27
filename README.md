@@ -9,8 +9,7 @@
 <a href="https://huggingface.co/collections/chen-hao-chao/mdm-prime"><img src="https://img.shields.io/badge/🤗_HuggingFace%20-MDM_Prime_v2%20-orange" alt="MDM-Prime-v2 on Hugging Face"/></a>
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
-<a href="https://x.com/chenhao_chao/status/1935699633654931464"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
-
+<a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
 </p>
 
 ## What’s Inside
