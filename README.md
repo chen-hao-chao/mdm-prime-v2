@@ -12,6 +12,25 @@
 <a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
 </p>
 
+## ⚠️ Notice: Perplexity Evaluation Error
+
+We have identified a serious error in the perplexity evaluation results. As a result, the paper has been retracted. A correction note will be released shortly.
+
+#### What remains valid
+
+The following results are unaffected and the code can still be used to reproduce them:
+
+- Claims about compute-optimal MDMs and ARMs (Tables 3, 4)
+- Scaling plots of MDMs and ARMs (Figure 5, Table 2)
+
+#### What is affected
+
+The NLL results for MDM-Prime-v2 do not represent a real improvement and may be overestimated.
+
+We apologize for any inconvenience this may cause.
+
+---
+
 ## What’s Inside
 
 This repository contains the code implementation of the experiments presented in the paper [*MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models*](https://arxiv.org/abs/2603.16077).
