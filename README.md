@@ -33,7 +33,7 @@ We apologize for any inconvenience this may cause.
 ---
 
 ## News
-- :notebook: **[Mar 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation is incorrect.
+- :notebook: **[May 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation is incorrect.
 
 
 ## What’s Inside
