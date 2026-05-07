@@ -14,7 +14,8 @@
 
 ## ⚠️ Notice: Perplexity Evaluation Error
 
-We have identified a serious error in the perplexity evaluation results. As a result, the paper has been retracted. A correction note will be released shortly.
+We have identified a serious error in the NLL evaluation results. As a result, the paper has been retracted. Please see our [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/) and [announcement](https://x.com/chenhao_chao/status/2050237847165092264?s=20) for more details. A corrected implementation will be released soon.
+
 
 #### What remains valid
 
@@ -31,6 +32,10 @@ We apologize for any inconvenience this may cause.
 
 ---
 
+## News
+- :notebook: **[Mar 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation is incorrect.
+
+
 ## What’s Inside
 
 This repository contains the code implementation of the experiments presented in the paper [*MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models*](https://arxiv.org/abs/2603.16077).
@@ -42,11 +47,14 @@ This repository contains the code implementation of the experiments presented in
   - Scaling Analysis
   - Larger-scale Pretraining
 
+
+
 ## Overview
 
 ### Scaling Analysis
 - **Folder**: [mdm-prime-v2/megatron](/megatron)
 - **Dataset**: [allenai/c4](https://huggingface.co/datasets/allenai/c4)
+- **Weights & Biases Logs**: [lance_chao/megatron-all-runs](https://wandb.ai/lance_chao/megatron-all-runs)
 - **Experiment**: Section 4.1 in our paper
 - **Best for**: (1) Studying the loss behavior; (2) Pretraining with advanced parallelism
 
@@ -55,11 +63,6 @@ This repository contains the code implementation of the experiments presented in
 - **Dataset**: [cerebras/SlimPajama-627B](https://huggingface.co/datasets/cerebras/SlimPajama-627B) (or [gmongaras/SlimPajama-627B_Reupload](https://huggingface.co/datasets/gmongaras/SlimPajama-627B_Reupload))
 - **Experiment**: Section 4.3 in our paper
 - **Best for**: (1) Pretraining 1.1B models; (2) Running inference and downstream applications
-
-### PPL Benchmarking
-- **Folder**: Refer to [chen-hao-chao/mdm-prime](https://github.com/chen-hao-chao/mdm-prime)
-- **Dataset**: [Skylion007/openwebtext](https://huggingface.co/datasets/Skylion007/openwebtext)
-- **Experiment**: Section 4.2 in our paper
 
 ## Demo
 
