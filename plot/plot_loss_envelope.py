@@ -164,10 +164,10 @@ def plot_mode(mode):
         title = "MDM-Prime-v2"  
     ax.set_title(title, fontsize=22, fontweight='bold')
     ax.set_xlabel('FLOPs', fontsize=22)
-    ax.set_ylabel('Loss (NLL)', fontsize=22)
+    ax.set_ylabel('Loss', fontsize=22)
     ax.grid(True, alpha=0.8, linestyle='-', which='both')
     plt.tight_layout()
-    plt.savefig(f'envelope_{mode}.png', dpi=200)
+    plt.savefig(f'assets/envelope_{mode}.png', dpi=200)
     print(f"Saved figure: envelope_{mode}.png")
 
 # ---------- Main Execution ----------

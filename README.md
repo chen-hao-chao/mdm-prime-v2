@@ -12,33 +12,15 @@
 <a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
 </p>
 
-## ⚠️ Notice: Perplexity Evaluation Error
-
-We have identified a serious error in the NLL evaluation results. As a result, the paper has been retracted. Please see our [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/) and [announcement](https://x.com/chenhao_chao/status/2050237847165092264?s=20) for more details. A corrected implementation will be released soon.
-
-
-#### What remains valid
-
-The following results are unaffected and the code can still be used to reproduce them:
-
-- Claims about compute-optimal MDMs and ARMs (Tables 3, 4)
-- Scaling plots of MDMs and ARMs (Figure 5, Table 2)
-
-#### What is affected
-
-The NLL results for MDM-Prime-v2 do not represent a real improvement and may be overestimated.
-
-We apologize for any inconvenience this may cause.
-
----
 
 ## News
-- :notebook: **[May 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation is incorrect.
+- :pencil2: **[May 22, 2026]** Released a corrected [paper](https://arxiv.org/abs/2603.16077). Check out [mdm-prime](https://github.com/chen-hao-chao/mdm-prime) for perplexity evaluation on OWT.
+- :notebook: **[May 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation has bugs. ([old preprint](https://arxiv.org/abs/2603.16077v2))
 
 
 ## What’s Inside
 
-This repository contains the code implementation of the experiments presented in the paper [*MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models*](https://arxiv.org/abs/2603.16077).
+This repository contains the code implementation of the experiments presented in the paper [*MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models*](https://arxiv.org/abs/2603.16077).
 
 - :whale: **Docker environments** for easy installation
 - 🤗 **Pretrained weights** for inference and evaluation
@@ -55,13 +37,11 @@ This repository contains the code implementation of the experiments presented in
 - **Folder**: [mdm-prime-v2/megatron](/megatron)
 - **Dataset**: [allenai/c4](https://huggingface.co/datasets/allenai/c4)
 - **Weights & Biases Logs**: [lance_chao/megatron-all-runs](https://wandb.ai/lance_chao/megatron-all-runs)
-- **Experiment**: Section 4.1 in our paper
 - **Best for**: (1) Studying the loss behavior; (2) Pretraining with advanced parallelism
 
 ### Larger-scale Pretraining
 - **Folder**: [mdm-prime-v2/lit_gpt](/lit_gpt)
 - **Dataset**: [cerebras/SlimPajama-627B](https://huggingface.co/datasets/cerebras/SlimPajama-627B) (or [gmongaras/SlimPajama-627B_Reupload](https://huggingface.co/datasets/gmongaras/SlimPajama-627B_Reupload))
-- **Experiment**: Section 4.3 in our paper
 - **Best for**: (1) Pretraining 1.1B models; (2) Running inference and downstream applications
 
 ## Demo
@@ -100,9 +80,15 @@ If you find this code implementation useful, please consider citing our papers.
 
 ```bib
 @article{chao2026mdmprimev2,
-      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
+      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
       author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
       year = {2026},
+}
+@article{chao2026dependency,
+      title   = {{Dependency Breaks Validity of Loss Functions in Masked Diffusion Models}},
+      author  = {Chao, Chen-Hao and Xu, Minkai and Geffner, Tomas and Vahdat, Arash and Krishnan, Rahul G.},
+      journal = {chen-hao-chao.github.io},
+      year    = {2026}
 }
 @inproceedings{chao2025mdmprime,
       title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 

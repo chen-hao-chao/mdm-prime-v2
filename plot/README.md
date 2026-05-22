@@ -34,13 +34,16 @@ We provide the code for plotting the following figures:
 
 |   | Experiment  | Fig. # in the Paper   | Code        |
 | -- | ---------- | --------------------- | ----------- |
-| [[link :point_down:](#fig-5-a)] | Loss Envelopes             | Fig. 5 (a)        | [plot_loss_envelope.py](/plot/plot_loss_envelope.py) |
-| [[link :point_down:](#fig-5-b)] | IsoFLOP Curves             | Fig. 5 (b)        | [plot_isoflop_curves.py](/plot/plot_isoflop_curves.py) |
-| [[link :point_down:](#fig-5-c)] | IsoLoss Curves             | Fig. 5 (c)        | [plot_isoloss_curves.py](/plot/plot_isoloss_curves.py) |
+| [[link :point_down:](#loss-envelopes)]            | Loss Envelopes            | Fig. 5 (a)        | [plot_loss_envelope.py](/plot/plot_loss_envelope.py)   |
+| [[link :point_down:](#isoflop-curves)]            | IsoFLOP Curves            | Fig. 5 (b)        | [plot_isoflop_curves.py](/plot/plot_isoflop_curves.py) |
+| [[link :point_down:](#isoLoss-curves)]            | IsoLoss Curves            | Fig. 5 (c)        | [plot_isoloss_curves.py](/plot/plot_isoloss_curves.py) |
+| [[link :point_down:](#accuracy-curves-170m)]      | Accuracy Curves 170M      | -                 | [plot_170m_acc.py](/plot/plot_170m_acc.py)             |
+| [[link :point_down:](#loss-curves-170m)]          | Loss Curves 170M          | -                 | [plot_170m_loss.py](/plot/plot_170m_loss.py)           |
+| [[link :point_down:](#prejection-weight-spectra)] | Prejection Weight Spectra | -                 | [plot_spectra.py](/plot/plot_spectra.py)               |
 
 ---
 
-### Fig. 5 (a)
+### Loss Envelopes
 
 - To plot the loss envelope curves, run the following command:
 ```bash
@@ -52,7 +55,7 @@ python plot_loss_envelope.py
 Enter model type ('arm', 'mdm', or 'prime'): 
 ```
 
-- You will get the following results:
+- You will get the following result:
 
 | <img src="assets/envelope_arm.png" alt="envelope_arm"> | <img src="assets/envelope_mdm.png" alt="envelope_mdm"> | <img src="assets/envelope_prime.png" alt="envelope_prime"> |
 | - | - | - |
@@ -66,7 +69,7 @@ Enter model type ('arm', 'mdm', or 'prime'):
 
 ---
 
-### Fig. 5 (b)
+### IsoFLOP Curves
 
 - To plot the IsoFLOP curves, run the following command:
 ```bash
@@ -78,7 +81,7 @@ python plot_isoflop_curves.py
 Enter model type ('arm', 'mdm', or 'prime'): 
 ```
 
-- You will get the following results:
+- You will get the following result:
 
 | <img src="assets/isoflop_arm.png" alt="isoflop_arm"> | <img src="assets/isoflop_mdm.png" alt="isoflop_mdm"> | <img src="assets/isoflop_prime.png" alt="isoflop_prime"> |
 | - | - | - |
@@ -99,7 +102,7 @@ Enter model type ('arm', 'mdm', or 'prime'):
 
 ---
 
-### Fig. 5 (c)
+### IsoLoss Curves
 
 - To plot the IsoLoss curves, run the following command:
 ```bash
@@ -111,12 +114,54 @@ python plot_isoflop_loss.py
 Enter model type ('arm', 'mdm', or 'prime'): 
 ```
 
-- You will get the following results:
+- You will get the following result:
 
 | <img src="assets/isoloss_arm.png" alt="isoloss_arm"> | <img src="assets/isoloss_mdm.png" alt="isoloss_mdm"> | <img src="assets/isoloss_prime.png" alt="isoloss_prime"> |
 | - | - | - |
 
 - The plot can be customized in a similar way as [Fig. 5 (b)](#fig-5-b).
+
+---
+
+### Accuracy Curves 170M
+
+- To plot the accuracy curves (170M), run the following command:
+```bash
+python plot_170m_acc.py
+```
+
+- You will get the following result:
+
+| <img src="assets/plot_170M_acc.png" alt="plot_170M_acc"> |
+| - |
+
+---
+
+### Loss Curves 170M
+
+- To plot the loss curves (170M), run the following command:
+```bash
+python plot_170m_loss.py
+```
+
+- You will get the following result:
+
+| <img src="assets/plot_170M_loss.png" alt="plot_170M_loss"> |
+| - |
+
+---
+
+### Prejection Weight Spectra
+
+- To plot the projection weight spectra, run the following command:
+```bash
+python plot_spectra.py
+```
+
+- You will get the following result:
+
+| <img src="assets/spectra.png" alt="spectra"> |
+| - |
 
 ---
 
@@ -126,9 +171,15 @@ If you find this code implementation useful, please consider citing our papers.
 
 ```bib
 @article{chao2026mdmprimev2,
-      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
+      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
       author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
       year = {2026},
+}
+@article{chao2026dependency,
+      title   = {{Dependency Breaks Validity of Loss Functions in Masked Diffusion Models}},
+      author  = {Chao, Chen-Hao and Xu, Minkai and Geffner, Tomas and Vahdat, Arash and Krishnan, Rahul G.},
+      journal = {chen-hao-chao.github.io},
+      year    = {2026}
 }
 @inproceedings{chao2025mdmprime,
       title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 

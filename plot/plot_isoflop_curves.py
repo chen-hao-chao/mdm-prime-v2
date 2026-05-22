@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.ticker import LogLocator
 plt.rcParams['font.family'] = 'serif' 
 
 # ---------- Shared Helpers ----------
@@ -122,12 +121,12 @@ def plot_isoflop(mode,
         title = "MDM-Prime-v2"  
     ax.set_title(title, fontsize=22, fontweight='bold')
     ax.set_xlabel('FLOPs', fontsize=22)
-    ax.set_ylabel('Loss (NLL)', fontsize=22)
+    ax.set_ylabel('Loss', fontsize=22)
     ax.set_xticks(x_tick_vals)
     ax.set_xticklabels(x_tick_labels)
     ax.grid(True, which="both", linestyle="-", alpha=0.5)
     plt.tight_layout()
-    plt.savefig(f"isoflop_{mode}.png", dpi=200)
+    plt.savefig(f"assets/isoflop_{mode}.png", dpi=200)
 
 if __name__ == "__main__":
     choice = input("Enter mode ('arm', 'mdm', or 'prime'): ").strip().lower()

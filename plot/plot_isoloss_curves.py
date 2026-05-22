@@ -129,7 +129,7 @@ def plot_isoflop(mode):
     E, A, B, alpha, beta = params_fit
     
     # Projection
-    TARGET_FLOP = 2.887e20
+    TARGET_FLOP = 3.30e21
     scaling_a = beta / (alpha + beta)
     G = ((alpha * A) / (beta * B))**(1/(alpha + beta))
     N_star = G * ((TARGET_FLOP/6) ** scaling_a)
@@ -146,7 +146,7 @@ def plot_isoflop(mode):
     ax.scatter(TARGET_FLOP, N_star, s=200, marker='o', color='#FF0000', 
                 edgecolor='black', linewidth=1, zorder=10, 
                 label=f"Target ({str(TARGET_FLOP)} FLOPs)")
-    ax.scatter(TARGET_FLOP, 92e6, s=250, marker='^', color='#FF0000',  #92e6
+    ax.scatter(TARGET_FLOP, 1028e6, s=250, marker='^', color='#FF0000',  #92e6
                 edgecolor='black', linewidth=1, zorder=10, 
                 label=f"Baseline ({str(TARGET_FLOP)} FLOPs)")
     ax.axvline(x=TARGET_FLOP, color='#FF0000', linestyle='--', linewidth=1.5, alpha=0.8, zorder=2)
@@ -168,7 +168,7 @@ def plot_isoflop(mode):
     ]
     ax.legend(handles=legend_elements, loc='lower right', framealpha=0.9, fontsize=10)
     plt.tight_layout()
-    plt.savefig(f'isoloss_{mode}.png')
+    plt.savefig(f'assets/isoloss_{mode}.png')
 
 # --- 4. Main Loop ---
 if __name__ == "__main__":

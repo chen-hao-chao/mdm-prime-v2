@@ -297,6 +297,54 @@ REFERENCE: And we've got to disprove that to the criminal standard, which is bey
 
 <br>
 
+:pushpin: **Unconditional Sampling**
+
+Generate unconditional text samples using SMDM and MDM-Prime-v2 without any context (prefix/suffix). The script supports both SMDM and MDM-Prime-v2 models and automatically evaluates entropy and generative perplexity. See `sampling_prime.sh` and `sampling_smdm.sh` for the full commands used in sample quality comparisons.
+
+```bash
+python sampling_uncond.py --model_name='chen-hao-chao/mdm-prime-v2-slimpajama' \
+                          --num_samples 5 \
+                          --seq_length 2048 \
+                          --nfe 256
+```
+
+- **Arguments:**
+    - `--model_name`: name of the HuggingFace repository. Options:
+        - `'chen-hao-chao/mdm-prime-v2-slimpajama'` for MDM-Prime-v2 (uses corrector steps)
+        - `'nieshen/SMDM'` for SMDM baseline
+        - or use `--ckpt_path` to specify path to your checkpoint
+        - or use `--checkpoint_dir` to load latest checkpoint from a directory
+    - `--num_samples`: number of unconditional samples to generate. (default: `5`)
+    - `--seq_length`: sequence length in tokens for each sample. (default: `2048`)
+    - `--nfe`: number of function evaluations. Note: for MDM-Prime-v2, corrector steps are used for 25% of NFE in the [0.5, 0.75] timestep range. (default: `200`)
+    - `--seed`: random seed(s) for reproducibility. Provide one seed per sample, or a single base seed. (default: `[42]`)
+    - `--model_size`: model size in millions of parameters. (default: `1028`)
+    - `--temperature`: sampling temperature for categorical distribution. (default: `1.0`)
+    - `--cache_dir_hf`: directory for HuggingFace model cache. (default: `None`)
+    - `--eval_model`: evaluation model for computing perplexity. (default: `'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'`)
+
+<details>
+<summary><strong>Output</strong></summary>
+
+The script saves results to `sampling_results/results_{model}_nfe={nfe}/`:
+- `samples.txt`: generated text samples
+- `metrics.txt`: entropy and perplexity metrics
+
+Example output:
+```
+==================================================
+Results over 5 generated samples:
+  Mean Entropy:                6.4521
+  Mean Generative Perplexity:  12.3456
+==================================================
+```
+
+**Metrics:**
+- **Entropy**: Average token-level entropy of the predicted distribution (measures diversity)
+- **Generative Perplexity**: Perplexity under the evaluation model (measures quality)
+
+</details>
+
 ---
 
 ## Implementation
@@ -352,6 +400,11 @@ Further changes based on the code in this folder are licensed under the `Apache-
 If you find this code implementation useful, please consider citing our papers.
 
 ```bib
+@article{chao2026mdmprimev2,
+      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
+      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+      year = {2026},
+}
 @article{chao2026mdmprimev2,
       title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
       author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
