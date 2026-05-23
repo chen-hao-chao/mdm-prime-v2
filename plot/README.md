@@ -1,8 +1,8 @@
 # Reproducing Figures in Our Paper
 
-<a href="https://arxiv.org/abs/2505.18495"><img src="https://img.shields.io/badge/arXiv-2505.18495-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
+<a href="https://arxiv.org/abs/2603.16077"><img src="https://img.shields.io/badge/arXiv-2603.16077-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
 
-This folder contains the code implementation for plotting the figures presented in [our paper]().
+This folder contains the code implementation for plotting the figures presented in [our paper](https://arxiv.org/abs/2603.16077).
 
 ---
 
@@ -34,12 +34,11 @@ We provide the code for plotting the following figures:
 
 |   | Experiment  | Fig. # in the Paper   | Code        |
 | -- | ---------- | --------------------- | ----------- |
-| [[link :point_down:](#loss-envelopes)]            | Loss Envelopes            | Fig. 5 (a)        | [plot_loss_envelope.py](/plot/plot_loss_envelope.py)   |
-| [[link :point_down:](#isoflop-curves)]            | IsoFLOP Curves            | Fig. 5 (b)        | [plot_isoflop_curves.py](/plot/plot_isoflop_curves.py) |
-| [[link :point_down:](#isoLoss-curves)]            | IsoLoss Curves            | Fig. 5 (c)        | [plot_isoloss_curves.py](/plot/plot_isoloss_curves.py) |
-| [[link :point_down:](#accuracy-curves-170m)]      | Accuracy Curves 170M      | -                 | [plot_170m_acc.py](/plot/plot_170m_acc.py)             |
-| [[link :point_down:](#loss-curves-170m)]          | Loss Curves 170M          | -                 | [plot_170m_loss.py](/plot/plot_170m_loss.py)           |
-| [[link :point_down:](#prejection-weight-spectra)] | Prejection Weight Spectra | -                 | [plot_spectra.py](/plot/plot_spectra.py)               |
+| [[link :point_down:](#loss-envelopes)]            | Loss Envelopes            | Fig. 7 (a)        | [plot_loss_envelope.py](/plot/plot_loss_envelope.py)   |
+| [[link :point_down:](#isoflop-curves)]            | IsoFLOP Curves            | Fig. 7 (b)        | [plot_isoflop_curves.py](/plot/plot_isoflop_curves.py) |
+| [[link :point_down:](#isoloss-curves)]            | IsoLoss Curves            | Fig. A4           | [plot_isoloss_curves.py](/plot/plot_isoloss_curves.py) |
+| [[link :point_down:](#accuracy-and-loss-curves)]  | Accuracy Curves 170M      | Fig. 6            | [plot_170m_acc.py](/plot/plot_170m_acc.py), [plot_170m_loss.py](/plot/plot_170m_loss.py)              |
+| [[link :point_down:](#prejection-weight-spectra)] | Prejection Weight Spectra | Figs. 8, A7       | [plot_spectra.py](/plot/plot_spectra.py)               |
 
 ---
 
@@ -123,31 +122,18 @@ Enter model type ('arm', 'mdm', or 'prime'):
 
 ---
 
-### Accuracy Curves 170M
+### Accuracy and Loss Curves
 
-- To plot the accuracy curves (170M), run the following command:
+- To plot the accuracy and loss curves (170M), run the following command:
 ```bash
 python plot_170m_acc.py
-```
-
-- You will get the following result:
-
-| <img src="assets/plot_170M_acc.png" alt="plot_170M_acc"> |
-| - |
-
----
-
-### Loss Curves 170M
-
-- To plot the loss curves (170M), run the following command:
-```bash
 python plot_170m_loss.py
 ```
 
 - You will get the following result:
 
-| <img src="assets/plot_170M_loss.png" alt="plot_170M_loss"> |
-| - |
+| <img src="assets/plot_170M_acc.png" alt="plot_170M_acc" width="250"> | <img src="assets/plot_170M_loss.png" alt="plot_170M_loss" width="250"> |
+| - | - |
 
 ---
 
