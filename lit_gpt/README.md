@@ -3,6 +3,7 @@
 <a href="https://arxiv.org/abs/2603.16077"><img src="https://img.shields.io/badge/arXiv-2603.16077-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
 <a href="https://huggingface.co/chen-hao-chao/mdm-prime-v2-slimpajama"><img src="https://img.shields.io/badge/🤗_HuggingFace%20-MDM_Prime_v2_Slimpajama%20-orange" alt="MDM-Prime-v2 on Hugging Face"/></a>
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/dockerhub-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
+[![Papers with Code: #2 on ANLI](https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge.svg?eval=22351&live=1)](https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge-link?eval=22351)
 
 This folder contains the code implementation of the scaling experiments presented in **Section 4.3** of [our paper](https://arxiv.org/abs/2603.16077). Our implementation is primarily based on [ML-GSAI/SMDM](https://github.com/ML-GSAI/SMDM) and [jzhang38/TinyLlama](https://github.com/jzhang38/TinyLlama).
 
@@ -400,19 +401,21 @@ Further changes based on the code in this folder are licensed under the `Apache-
 If you find this code implementation useful, please consider citing our papers.
 
 ```bib
-@article{chao2026mdmprimev2,
+@inproceedings{chao2026mdmprimev2,
       title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Junwei Quan and Chun-Yi Lee and Rahul G. Krishnan},
+      booktitle = {Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP)},
       year = {2026},
 }
-@article{chao2026mdmprimev2,
-      title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Compute-optimal Scaling of Diffusion Language Models}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
-      year = {2026},
+@article{chao2026dependency,
+      title   = {{Dependency Breaks Validity of Loss Functions in Masked Diffusion Models}},
+      author  = {Chen-Hao Chao and Minkai Xu and Tomas Geffner and Arash Vahdat and Rahul G. Krishnan},
+      journal = {chen-hao-chao.github.io},
+      year    = {2026}
 }
 @inproceedings{chao2025mdmprime,
       title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Hanwen Liang, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Hanwen Liang and Chun-Yi Lee and Rahul G. Krishnan},
       booktitle = {Proceedings of the Conference on Neural Information Processing Systems (NeurIPS)},
       year = {2025},
 }

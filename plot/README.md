@@ -36,9 +36,8 @@ We provide the code for plotting the following figures:
 | -- | ---------- | --------------------- | ----------- |
 | [[link :point_down:](#loss-envelopes)]            | Loss Envelopes            | Fig. 7 (a)        | [plot_loss_envelope.py](/plot/plot_loss_envelope.py)   |
 | [[link :point_down:](#isoflop-curves)]            | IsoFLOP Curves            | Fig. 7 (b)        | [plot_isoflop_curves.py](/plot/plot_isoflop_curves.py) |
-| [[link :point_down:](#isoloss-curves)]            | IsoLoss Curves            | Fig. A4           | [plot_isoloss_curves.py](/plot/plot_isoloss_curves.py) |
 | [[link :point_down:](#accuracy-and-loss-curves)]  | Accuracy Curves 170M      | Fig. 6            | [plot_170m_acc.py](/plot/plot_170m_acc.py), [plot_170m_loss.py](/plot/plot_170m_loss.py)              |
-| [[link :point_down:](#prejection-weight-spectra)] | Prejection Weight Spectra | Figs. 8, A7       | [plot_spectra.py](/plot/plot_spectra.py)               |
+| [[link :point_down:](#prejection-weight-spectra)] | Prejection Weight Spectra | Figs. 9, A7       | [plot_spectra.py](/plot/plot_spectra.py)               |
 
 ---
 
@@ -101,27 +100,6 @@ Enter model type ('arm', 'mdm', or 'prime'):
 
 ---
 
-### IsoLoss Curves
-
-- To plot the IsoLoss curves, run the following command:
-```bash
-python plot_isoflop_loss.py
-```
-
-- Enter `arm`, `mdm`, or `prime`. The code will plot the corresponding loss curve. The plot will be saved as `isoloss_${model_type}.png`.
-```
-Enter model type ('arm', 'mdm', or 'prime'): 
-```
-
-- You will get the following result:
-
-| <img src="assets/isoloss_arm.png" alt="isoloss_arm"> | <img src="assets/isoloss_mdm.png" alt="isoloss_mdm"> | <img src="assets/isoloss_prime.png" alt="isoloss_prime"> |
-| - | - | - |
-
-- The plot can be customized in a similar way as [Fig. 5 (b)](#fig-5-b).
-
----
-
 ### Accuracy and Loss Curves
 
 - To plot the accuracy and loss curves (170M), run the following command:
@@ -156,20 +134,21 @@ python plot_spectra.py
 If you find this code implementation useful, please consider citing our papers.
 
 ```bib
-@article{chao2026mdmprimev2,
+@inproceedings{chao2026mdmprimev2,
       title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Junwei Quan and Chun-Yi Lee and Rahul G. Krishnan},
+      booktitle = {Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP)},
       year = {2026},
 }
 @article{chao2026dependency,
       title   = {{Dependency Breaks Validity of Loss Functions in Masked Diffusion Models}},
-      author  = {Chao, Chen-Hao and Xu, Minkai and Geffner, Tomas and Vahdat, Arash and Krishnan, Rahul G.},
+      author  = {Chen-Hao Chao and Minkai Xu and Tomas Geffner and Arash Vahdat and Rahul G. Krishnan},
       journal = {chen-hao-chao.github.io},
       year    = {2026}
 }
 @inproceedings{chao2025mdmprime,
       title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Hanwen Liang, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Hanwen Liang and Chun-Yi Lee and Rahul G. Krishnan},
       booktitle = {Proceedings of the Conference on Neural Information Processing Systems (NeurIPS)},
       year = {2025},
 }

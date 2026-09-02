@@ -14,6 +14,7 @@
 
 
 ## News
+- :rocket: **[Aug 20, 2026]** Our paper has been accepted to **EMNLP 2026 (Main)**.
 - :pencil2: **[May 22, 2026]** Released a corrected [paper](https://arxiv.org/abs/2603.16077). Check out [mdm-prime](https://github.com/chen-hao-chao/mdm-prime) for perplexity evaluation on OWT.
 - :notebook: **[May 1, 2026]** Released [errata note](https://chen-hao-chao.github.io/dependency-breaks-validity/). The current NLL evaluation has bugs. ([old preprint](https://arxiv.org/abs/2603.16077v2))
 
@@ -79,20 +80,21 @@ Further changes based on the code in this folder are licensed under the `Apache-
 If you find this code implementation useful, please consider citing our papers.
 
 ```bib
-@article{chao2026mdmprimev2,
+@inproceedings{chao2026mdmprimev2,
       title = {{MDM-Prime-v2: Binary Encoding and Index Shuffling Enable Scaling of Diffusion Language Models}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Junwei Quan, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Junwei Quan and Chun-Yi Lee and Rahul G. Krishnan},
+      booktitle = {Proceedings of the Conference on Empirical Methods in Natural Language Processing (EMNLP)},
       year = {2026},
 }
 @article{chao2026dependency,
       title   = {{Dependency Breaks Validity of Loss Functions in Masked Diffusion Models}},
-      author  = {Chao, Chen-Hao and Xu, Minkai and Geffner, Tomas and Vahdat, Arash and Krishnan, Rahul G.},
+      author  = {Chen-Hao Chao and Minkai Xu and Tomas Geffner and Arash Vahdat and Rahul G. Krishnan},
       journal = {chen-hao-chao.github.io},
       year    = {2026}
 }
 @inproceedings{chao2025mdmprime,
       title = {{Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking}}, 
-      author = {Chen-Hao Chao, Wei-Fang Sun, Hanwen Liang, Chun-Yi Lee, Rahul G. Krishnan},
+      author = {Chen-Hao Chao and Wei-Fang Sun and Hanwen Liang and Chun-Yi Lee and Rahul G. Krishnan},
       booktitle = {Proceedings of the Conference on Neural Information Processing Systems (NeurIPS)},
       year = {2025},
 }
