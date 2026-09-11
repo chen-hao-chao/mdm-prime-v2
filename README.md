@@ -8,10 +8,10 @@
 <a href="https://arxiv.org/abs/2603.16077"><img src="https://img.shields.io/badge/arXiv-2603.16077-b31b1b.svg?logo=arxiv&logoColor=red" alt="MDM-Prime Paper on arXiv"/></a>
 <a href="https://huggingface.co/collections/chen-hao-chao/mdm-prime"><img src="https://img.shields.io/badge/🤗_HuggingFace%20-MDM_Prime_v2%20-orange" alt="MDM-Prime-v2 on Hugging Face"/></a>
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
-<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
-<a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a><br>
+<a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a><br>
+<a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/MDM_Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a>
+<a href="https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge-link?eval=22351"><img src="https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge.svg?eval=22351&amp;live=1" alt="Papers with Code: #2 on ANLI"/></a>
 </p>
-
 
 ## News
 - :rocket: **[Aug 20, 2026]** Our paper has been accepted to **EMNLP 2026 (Main)**.
