@@ -291,14 +291,14 @@
             <a href="https://chen-hao-chao.github.io/mdm-prime/"
                class="external-link button is-small is-rounded" style="text-decoration: none; background-color: transparent; border: 1px solid #999999; color: #666666;">
               <span class="icon"><i class="fas fa-globe"></i></span>
-              <span>project page</span>
+              <span>website</span>
             </a>
           </span>
           <span class="link-block">
             <a href="https://arxiv.org/abs/2505.18495"
                class="external-link button is-small is-rounded" style="text-decoration: none; background-color: transparent; border: 1px solid #999999; color: #666666;">
               <span class="icon"><i class="ai ai-arxiv"></i></span>
-              <span>paper</span>
+              <span>arXiv</span>
             </a>
           </span>
           <span class="link-block">
@@ -312,19 +312,17 @@
         <p style="margin-bottom: 2rem;">MDM-Prime-v2 builds on the Partial masking scheme introduced in our prior work, <i>Beyond Masked and Unmasked: Discrete Diffusion Models via Partial Masking</i> (NeurIPS 2025).</p>
 
         <div style="display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
-          <h4 class="title" style="margin: 0;">Errata: Dependency Breaks ELBO</h4>
+          <h4 class="title" style="margin: 0;">Errata Note</h4>
           <span class="link-block">
             <a href="https://chen-hao-chao.github.io/dependency-breaks-validity/"
                class="external-link button is-small is-rounded" style="text-decoration: none; background-color: transparent; border: 1px solid #999999; color: #666666;">
-              <span class="icon"><i class="fas fa-exclamation-circle"></i></span>
-              <span>errata note</span>
+              <span class="icon"><i class="fas fa-globe"></i></span>
+              <span>website</span>
             </a>
           </span>
         </div>
-        <p>The original MDM-Prime-v2 preprint (Mar. 30, 2026) reported that the model exhibits more favorable compute-optimal scaling than autoregressive models (ARMs). The training objective used in
-          those comparisons, however, is not a valid evidence lower bound (ELBO): prior work (EDLM) proposed capturing the joint distribution over sub-tokens, which breaks the
-          independence assumption the bound relies on, so the resulting loss is not actually a bound on the data negative log-likelihood. We discuss this issue and its implications in a
-          dedicated errata note.</p>
+        <p>The original MDM-Prime-v2 preprint (Mar. 30, 2026) reported that the model exhibits more favorable compute-optimal NLL than autoregressive models (ARMs). The training objective used in
+          those comparisons, however, is not an evidence lower bound (ELBO). We discuss this issue and its implications in a dedicated errata note.</p>
 
       </div>
     </div>
