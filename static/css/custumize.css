@@ -1,4 +1,68 @@
 a[href] {
-    color: #0e0052;
+    color: #331ab3;
     text-decoration: underline;
+}
+
+/* Single unified font family across the whole page (title, headings, body, tags). */
+body, .title, .publication-title, .publication-authors {
+    font-family: 'Noto Sans', sans-serif;
+}
+
+/* Subsection subtitles (e.g., "Technique 2: Binary Encoding") smaller than section titles. */
+h4.title {
+    font-size: 1.35rem;
+}
+
+.tag-pill {
+    display: inline-block;
+    background-color: #f1f0fb;
+    color: #331ab3;
+    border: 1px solid #331ab3;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    margin: 0.2rem 0.25rem;
+    font-weight: 600;
+    font-size: 0.85em;
+}
+
+/* Hover animation for every button on the page. */
+.button {
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Bulma gives the icon a negative left margin as a spacing trick, which skews flexbox centering
+   and makes icon+text content render left of the button's true center. Neutralize it. */
+.button .icon:first-child:not(:last-child) {
+    margin-left: 0;
+    margin-right: 0.4em;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(51, 26, 179, 0.3);
+    border-color: #331ab3 !important;
+    color: #331ab3 !important;
+}
+
+/* Let button icons (e.g., GitHub, arXiv) follow the button's own text color instead of Bulma's default gray. */
+.button .icon {
+    color: inherit;
+    transition: color 0.15s ease;
+}
+
+/* Scale up font-icon glyphs (arXiv, GitHub, etc.) so they read at the same visual size as the HuggingFace image icon.
+   Font Awesome's JS (autoReplaceSvg) swaps <i class="fa..."> for an inline <svg>, so these selectors must not
+   require the "i" tag or they silently stop matching after that swap happens. */
+.button .icon i,
+.button .icon svg {
+    font-size: 1.2em !important;
+    width: 1.2em !important;
+    height: 1.2em !important;
+}
+
+.button .icon .ai-arxiv {
+    font-size: 1.3em !important;
+    width: 1.3em !important;
+    height: 1.3em !important;
+    padding-top: 0.15em;
 }
