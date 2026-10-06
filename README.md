@@ -10,7 +10,7 @@
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-megatron"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_Megatron-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a>
 <a href="https://hub.docker.com/r/chenhaochao/mdm-prime-v2-litgpt"><img src="https://img.shields.io/badge/docker-MDM_Prime_v2_litgpt-blue.svg?logo=docker" alt="MDM-Prime-v2 on Docker"/></a><br>
 <a href="https://x.com/chenhao_chao/status/2034647722947461489"><img src="https://img.shields.io/badge/MDM_Prime_v2-black.svg?logo=X" alt="MDM-Prime-v2 on X"/></a>
-<a href="https://chen-hao-chao.github.io/mdm-prime-v2/"><img src="https://img.shields.io/badge/🌐_Website-MDM_Prime_v2-lightblue" alt="MDM-Prime-v2 Website"/></a>
+<a href="https://chen-hao-chao.github.io/mdm-prime-v2/"><img src="https://img.shields.io/badge/🌐_Website-MDM_Prime_v2-599eb3" alt="MDM-Prime-v2 Website"/></a>
 <a href="https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge-link?eval=22351"><img src="https://paperswithcode.co/api/v1/papers/2603.16077/leaderboard-badge.svg?eval=22351&amp;live=1" alt="Papers with Code: #2 on ANLI"/></a>
 </p>
 
